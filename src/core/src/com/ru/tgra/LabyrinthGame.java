@@ -61,10 +61,10 @@ public class LabyrinthGame extends ApplicationAdapter
 		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
 		Point3D lightPos = new Point3D(0, 10.0f, 0);
-		float lightShininess = 30f;
+		float lightShininess = 60f;
 		Color lightAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
         Color lightDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        Color lightSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        Color lightSpecular = new Color(0.5f, 0.5f, 0.5f, 1.0f);
 
 		light = new Light(lightPos, lightAmbience, lightDiffuse, lightSpecular, lightShininess);
 
@@ -165,6 +165,27 @@ public class LabyrinthGame extends ApplicationAdapter
 		{
 			player.getCamera().slide(0, 0, deltaTime * Settings.playerSpeed);
 		}
+
+		// Debug
+        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+        {
+            player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        {
+            player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.E))
+        {
+            player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.Q))
+        {
+            player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
+        }
 	}
 
 	private void update(float deltaTime)
