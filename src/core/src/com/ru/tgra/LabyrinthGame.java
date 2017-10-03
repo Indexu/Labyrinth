@@ -31,8 +31,6 @@ public class LabyrinthGame extends ApplicationAdapter
 	private float angle = 0;
 
 	private Light light;
-	private Material material;
-	private Color minimapColor;
 
 	@Override
 	public void create ()
@@ -47,40 +45,25 @@ public class LabyrinthGame extends ApplicationAdapter
 		SincGraphic.create(shader.getVertexPointer());
 		CoordFrameGraphic.create(shader.getVertexPointer());
 
-		Gdx.gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        MazeGenerator mazeGenerator = new MazeGenerator(Settings.width, Settings.height);
+
+        boolean[][] mazeWalls = mazeGenerator.getWalls();
 
 		ModelMatrix.main = new ModelMatrix();
 		ModelMatrix.main.loadIdentityMatrix();
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
-
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
 
 		rand = new Random();
 
 		oldMouseX = Gdx.input.getX();
 		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-		Point3D lightPos = new Point3D(0, 10.0f, 0);
-		float lightShininess = 60f;
-		Color lightAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        Color lightDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        Color lightSpecular = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+		// Light
+		Point3D lightPos = new Point3D(Settings.width / 2, 10.0f, Settings.height / 2);
+		light = new Light(lightPos, Settings.lightAmbience, Settings.lightDiffuse, Settings.lightSpecular, Settings.lightShininess);
 
-		light = new Light(lightPos, lightAmbience, lightDiffuse, lightSpecular, lightShininess);
-
-        Color materialAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        Color materialDiffuse = new Color(0.44f, 0.0f, 0.89f, 1.0f);
-        Color materialSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        Color materialEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-
-        material = new Material(materialAmbience, materialDiffuse, materialSpecular, materialEmission);
-
-        minimapColor = new Color(0.2f, 0.6f, 0.8f, 1.0f);
-
-        MazeGenerator mazeGenerator = new MazeGenerator(Settings.width, Settings.height);
-
-        boolean[][] mazeWalls = mazeGenerator.getWalls();
-
+		// Walls
+        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission);
         Vector3D scale = new Vector3D(1f, 2f, 1f);
 
         for (int i = 0; i < Settings.width; i++)
@@ -91,7 +74,7 @@ public class LabyrinthGame extends ApplicationAdapter
                 {
                     Point3D position = new Point3D(i, 0, j);
 
-                    Block block = new Block(position, new Vector3D(scale), material);
+                    Block block = new Block(position, new Vector3D(scale), wallMaterial);
 
                     GameManager.gameObjects.add(block);
                 }
@@ -99,23 +82,21 @@ public class LabyrinthGame extends ApplicationAdapter
         }
 
         // Floor
-        Block floor = new Block(new Point3D(Settings.width / 2, -0.5f, Settings.height / 2), new Vector3D(Settings.width, 0.01f, Settings.height), material);
+        Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission);
+        Block floor = new Block(new Point3D(Settings.width / 2, -0.5f, Settings.height / 2), new Vector3D(Settings.width, 0.01f, Settings.height), floorMaterial);
         GameManager.gameObjects.add(floor);
 
         // End point
-        Material endPointMat = new Material(material);
-        endPointMat.setDiffuse(new Color(1.0f, 0f, 0f, 1.0f));
-
+        Material endPointMat = new Material(Settings.endPointAmbience, Settings.endPointDiffuse, Settings.endPointSpecular, Settings.endPointEmission);
         Block endPoint = new Block(mazeGenerator.getEnd(), new Vector3D(0.5f, 0.5f, 0.5f), endPointMat);
         GameManager.gameObjects.add(endPoint);
 
         // Minimap
         orthoCam = new Camera();
-        orthoCam.setOrthographicProjection(-10, 10, -10, 10, 3f, 100);
+        orthoCam.setOrthographicProjection(-5, 5, -5, 5, 3f, 100);
 
-        Material playerMat = new Material(material);
-        playerMat.setDiffuse(new Color(1.0f, 1.0f, 0f, 1.0f));
-
+        // Player
+        Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission);
         player = new Player(mazeGenerator.getStart(), new Vector3D(0.5f, 1f, 0.5f), Settings.playerSpeed, playerMat);
 	}
 
@@ -138,32 +119,32 @@ public class LabyrinthGame extends ApplicationAdapter
 
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
 		{
-			player.getCamera().yaw(Settings.playerLookSensitivity * deltaTime);
+			player.lookLeft();
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
 		{
-			player.getCamera().yaw(-Settings.playerLookSensitivity * deltaTime);
+			player.lookRight();
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.A))
 		{
-			player.getCamera().slide(-deltaTime * Settings.playerSpeed, 0, 0);
+            player.moveLeft();
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.D))
 		{
-			player.getCamera().slide(deltaTime * Settings.playerSpeed, 0, 0);
+            player.moveRight();
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.W))
 		{
-			player.getCamera().slide(0, 0, -deltaTime * Settings.playerSpeed);
+            player.moveForward();
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.S))
 		{
-			player.getCamera().slide(0, 0, deltaTime * Settings.playerSpeed);
+            player.moveBack();
 		}
 
 		// Debug
@@ -215,16 +196,15 @@ public class LabyrinthGame extends ApplicationAdapter
 			}
 			else
 			{
-				Gdx.gl.glViewport(Gdx.graphics.getWidth() / 2, 0, Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-				// player.getCamera().setPerspectiveProjection(fov, 1.0f, 0.1f, 10000000.0f);
-				orthoCam.look(new Point3D(player.getCamera().eye.x, 20.0f, player.getCamera().eye.z), player.getCamera().eye, new Vector3D(0, 0, -1));
+			    Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
+				Gdx.gl.glViewport((int)(Gdx.graphics.getWidth() * 0.65f), (int)(Gdx.graphics.getHeight() * 0.65f), Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 3);
+				orthoCam.look(new Point3D(player.getCamera().eye.x, 30.0f, player.getCamera().eye.z), player.getPosition(), new Vector3D(0, 0, -1));
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
 			}
 
-            shader.setGlobalAmbience(0f);
-			shader.setLight(light);
-			shader.setMaterial(material);
+            shader.setGlobalAmbience(Settings.globalAmbience);
+            shader.setLight(light);
 
 			for (GameObject gameObject : GameManager.gameObjects)
             {
@@ -234,6 +214,7 @@ public class LabyrinthGame extends ApplicationAdapter
 			if (viewNum == 1)
 			{
                 player.draw();
+
 			}
 		}
 
