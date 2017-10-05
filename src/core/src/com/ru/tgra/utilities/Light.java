@@ -6,7 +6,6 @@ public class Light
     private Color ambience;
     private Color diffuse;
     private Color specualar;
-    private float shininess;
 
     public Light()
     {
@@ -14,16 +13,14 @@ public class Light
         ambience = new Color();
         diffuse = new Color();
         specualar = new Color();
-        shininess = 0f;
     }
 
-    public Light(Point3D position, Color ambience, Color diffuse, Color specualar, float shininess)
+    public Light(Point3D position, Color ambience, Color diffuse, Color specualar)
     {
         this.position = position;
         this.ambience = ambience;
         this.diffuse = diffuse;
         this.specualar = specualar;
-        this.shininess = shininess;
     }
 
     public Point3D getPosition()
@@ -63,15 +60,5 @@ public class Light
     public void setSpecualar(Color specualar)
     {
         this.specualar = specualar;
-    }
-
-    public float getShininess()
-    {
-        return shininess;
-    }
-
-    public void setShininess(float shininess)
-    {
-        this.shininess = shininess;
     }
 }

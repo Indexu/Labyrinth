@@ -1,6 +1,7 @@
 package com.ru.tgra.objects;
 
 import com.ru.tgra.Camera;
+import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
 import com.ru.tgra.shapes.BoxGraphic;
@@ -13,13 +14,11 @@ public class Player extends GameObject
 {
     private Camera camera;
 
-    // Movement
-    private boolean moveLeft;
-    private boolean moveRight;
-    private boolean moveForward;
-    private boolean moveBack;
-    private boolean lookLeft;
-    private boolean lookRight;
+    private float radius;
+    private float offset = 0.5f;
+
+    private Vector3D movementVector;
+    private float yaw;
 
     public Player(Point3D position, Vector3D scale, float speed, Material material)
     {
@@ -30,53 +29,33 @@ public class Player extends GameObject
         this.speed = speed;
         this.material = material;
 
+        radius = scale.x * 0.5f;
+
         Point3D center = new Point3D(position);
         center.z += 1;
 
         camera = new Camera();
         camera.look(position, center, new Vector3D(0,1,0));
+
+        movementVector = new Vector3D();
+        yaw = 0;
     }
 
     public void update(float deltaTime)
     {
-        if (moveLeft)
-        {
-            camera.slide(-deltaTime * Settings.playerSpeed, 0, 0);
-            moveLeft = false;
-        }
+        movementVector.scale(deltaTime);
+        yaw *= deltaTime;
 
-        if (moveRight)
-        {
-            camera.slide(deltaTime * Settings.playerSpeed, 0, 0);
-            moveRight = false;
-        }
+        camera.slide(movementVector.x, movementVector.y, movementVector.z);
+        camera.yaw(yaw);
 
-        if (moveForward)
-        {
-            camera.slide(0, 0, -deltaTime * Settings.playerSpeed);
-            moveForward = false;
-        }
+        movementVector.set(0, 0, 0);
+        yaw = 0;
 
-        if (moveBack)
-        {
-            camera.slide(0, 0, deltaTime * Settings.playerSpeed);
-            moveBack = false;
-        }
-
-        if (lookLeft)
-        {
-            camera.yaw(Settings.playerLookSensitivity * deltaTime);
-            lookLeft = false;
-        }
-
-        if (lookRight)
-        {
-            camera.yaw(-Settings.playerLookSensitivity * deltaTime);
-            lookRight = false;
-        }
+        wallCollision();
     }
 
-    public void draw()
+    public void draw(int viewportID)
     {
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.addTranslation(position);
@@ -90,36 +69,86 @@ public class Player extends GameObject
 
     public void moveLeft()
     {
-        moveLeft = true;
+        movementVector.x = -Settings.playerSpeed;
     }
 
     public void moveRight()
     {
-        moveRight = true;
+        movementVector.x = Settings.playerSpeed;
     }
 
     public void moveForward()
     {
-        moveForward = true;
+        movementVector.z = -Settings.playerSpeed;
     }
 
     public void moveBack()
     {
-        moveBack = true;
+        movementVector.z = Settings.playerSpeed;
     }
 
     public void lookLeft()
     {
-        lookLeft = true;
+        yaw = Settings.playerLookSensitivity;
     }
 
     public void lookRight()
     {
-        lookRight = true;
+        yaw = -Settings.playerLookSensitivity;
     }
 
     public Camera getCamera()
     {
         return camera;
+    }
+
+    private void wallCollision()
+    {
+        int x = (int) (position.x + 0.5f);
+        int y = (int) (position.z + 0.5f);
+
+        float unitX = (position.x - ((float)(int)position.x) + 0.5f) % 1f;
+        float unitZ = (position.z - ((float)(int)position.z) + 0.5f) % 1f;
+
+        if (0 <= x && x < GameManager.mazeWalls.length && 0 <= y && y < GameManager.mazeWalls[0].length)
+        {
+            float left = unitX - radius;
+            float right = unitX + radius;
+            float top = unitZ - radius;
+            float bottom = unitZ + radius;
+            boolean collided = false;
+
+            // Check left
+            if (left < 0 && x != 0 && GameManager.mazeWalls[x-1][y])
+            {
+                position.x -= left;
+                collided = true;
+            }
+            // Check right
+            else if (1 < right && x != GameManager.mazeWalls.length-1 && GameManager.mazeWalls[x+1][y])
+            {
+                position.x -= (right % 1);
+                collided = true;
+            }
+
+            // Check top
+            if (top < 0 && y != 0 && GameManager.mazeWalls[x][y-1])
+            {
+                position.z -= top;
+                collided = true;
+            }
+            // Check bottom
+            else if (1 < bottom && y != GameManager.mazeWalls[0].length-1 && GameManager.mazeWalls[x][y+1])
+            {
+                position.z -= (bottom % 1);
+                collided = true;
+            }
+
+            // Check diagonal
+            if (collided)
+            {
+                // TODO
+            }
+        }
     }
 }

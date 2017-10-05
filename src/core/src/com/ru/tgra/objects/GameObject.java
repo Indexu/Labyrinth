@@ -36,7 +36,7 @@ public abstract class GameObject
         destroyed = false;
     }
 
-    public abstract void draw();
+    public abstract void draw(int viewportID);
 
     public abstract void update(float deltaTime);
 
@@ -60,7 +60,8 @@ public abstract class GameObject
         this.position = position;
     }
 
-    public Vector3D getDirection() {
+    public Vector3D getDirection()
+    {
         return direction;
     }
 

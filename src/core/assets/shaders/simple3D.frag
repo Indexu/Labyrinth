@@ -3,11 +3,9 @@
 precision mediump float;
 #endif
 
-uniform vec4 u_eyePosition;
 uniform float u_shininessFactor;
 uniform float u_globalAmbience;
 
-uniform vec4 u_lightPosition;
 uniform vec4 u_lightDiffuse;
 uniform vec4 u_lightSpecular;
 uniform vec4 u_lightAmbience;
@@ -17,22 +15,22 @@ uniform vec4 u_materialSpecular;
 uniform vec4 u_materialAmbience;
 uniform vec4 u_materialEmission;
 
-varying vec4 v_position;
-varying vec4 v_normal;
+varying vec4 v_n;
+varying vec4 v_s;
+varying vec4 v_h;
 
 void main()
 {
-// Lighting
+    // Lighting
 
-	vec4 s = u_lightPosition - v_position;
+    vec4 n = normalize(v_n);
+    vec4 s = normalize(v_s);
+    vec4 h = normalize(v_h);
 
-	float lampert = dot(v_normal, s) / (length(v_normal) * length(s));
+	float lampert = dot(n, s) / (length(n) * length(s));
 	lampert = ((lampert < 0.0) ? 0.0 : lampert);
 
-	vec4 v = u_eyePosition - v_position;
-	vec4 h = s + v;
-
-	float phong = dot(v_normal, h) / (length(v_normal) * length(h));
+	float phong = dot(n, h) / (length(n) * length(h));
     phong = (phong < 0.0 ? 0.0 : phong);
     phong = pow(phong, u_shininessFactor);
 

@@ -9,8 +9,12 @@ uniform mat4 u_modelMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
 
-varying vec4 v_position;
-varying vec4 v_normal;
+uniform vec4 u_lightPosition;
+uniform vec4 u_eyePosition;
+
+varying vec4 v_n;
+varying vec4 v_s;
+varying vec4 v_h;
 
 void main()
 {
@@ -20,18 +24,23 @@ void main()
 	vec4 normal = vec4(a_normal.x, a_normal.y, a_normal.z, 0.0);
 	normal = u_modelMatrix * normal;
 
-	// global coordinates
+	// Global coordinates
+
+	v_n = normal;
+    v_s = u_lightPosition - position;
+
+    vec4 v = u_eyePosition - position;
+    v_h = v_s + v;
 
 	position = u_viewMatrix * position;
-	normal = u_viewMatrix * normal;
+	// normal = u_viewMatrix * normal;
 
-	// eye coordinates
-
-	v_position = position;
-	v_normal = normal;
+	// Eye coordinates
 
 	// v_color = (dot(normal, vec4(0,0,1,0)) / length(normal)) * u_color;
 	// v_color = (dot(normal, normalize(vec4(-position.x,-position.y,-position.z,0))) / length(normal)) * u_color;
 
 	gl_Position = u_projectionMatrix * position;
+
+	// Clip coordinates
 }

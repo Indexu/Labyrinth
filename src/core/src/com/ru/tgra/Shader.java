@@ -90,6 +90,7 @@ public class Shader
         setMaterialDiffuse(material.getDiffuse());
         setMaterialSpecular(material.getSpecular());
         setMaterialEmission(material.getEmission());
+        setShininessFactor(material.getShininess());
     }
 
     public void setLight(Light light)
@@ -98,7 +99,6 @@ public class Shader
         setLightAmbience(light.getAmbience());
         setLightDiffuse(light.getDiffuse());
         setLightSpecular(light.getSpecualar());
-        setShininessFactor(light.getShininess());
     }
 
     public void setMaterialDiffuse(Color color)

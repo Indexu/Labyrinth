@@ -45,10 +45,6 @@ public class LabyrinthGame extends ApplicationAdapter
 		SincGraphic.create(shader.getVertexPointer());
 		CoordFrameGraphic.create(shader.getVertexPointer());
 
-        MazeGenerator mazeGenerator = new MazeGenerator(Settings.width, Settings.height);
-
-        boolean[][] mazeWalls = mazeGenerator.getWalls();
-
 		ModelMatrix.main = new ModelMatrix();
 		ModelMatrix.main.loadIdentityMatrix();
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
@@ -60,21 +56,66 @@ public class LabyrinthGame extends ApplicationAdapter
 
 		// Light
 		Point3D lightPos = new Point3D(Settings.width / 2, 10.0f, Settings.height / 2);
-		light = new Light(lightPos, Settings.lightAmbience, Settings.lightDiffuse, Settings.lightSpecular, Settings.lightShininess);
+		light = new Light(lightPos, Settings.lightAmbience, Settings.lightDiffuse, Settings.lightSpecular);
 
 		// Walls
-        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission);
+        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission, Settings.wallShininess);
         Vector3D scale = new Vector3D(1f, 2f, 1f);
 
-        for (int i = 0; i < Settings.width; i++)
+        for (int i = 0; i < Settings.height; i++)
         {
-            for (int j = 0; j < Settings.height; j++)
+            for (int j = 0; j < Settings.width; j++)
             {
-                if (mazeWalls[i][j])
+                if (GameManager.mazeWalls[i][j])
                 {
-                    Point3D position = new Point3D(i, 0, j);
+                    Point3D position = new Point3D(i, 0.5f, j);
 
-                    Block block = new Block(position, new Vector3D(scale), wallMaterial);
+                    /* === Cube mask === */
+                    CubeMask mask = new CubeMask();
+                    mask.setBottom(false);
+                    mask.setTop(false);
+
+                    // North
+                    if (i != Settings.height-1)
+                    {
+                        mask.setNorth(!GameManager.mazeWalls[i+1][j]);
+                    }
+                    else
+                    {
+                        mask.setNorth(false);
+                    }
+
+                    // South
+                    if (i != 0)
+                    {
+                        mask.setSouth(!GameManager.mazeWalls[i-1][j]);
+                    }
+                    else
+                    {
+                        mask.setSouth(false);
+                    }
+
+                    // East
+                    if (j != Settings.width-1)
+                    {
+                        mask.setEast(!GameManager.mazeWalls[i][j+1]);
+                    }
+                    else
+                    {
+                        mask.setEast(false);
+                    }
+
+                    // West
+                    if (j != 0)
+                    {
+                        mask.setWest(!GameManager.mazeWalls[i][j-1]);
+                    }
+                    else
+                    {
+                        mask.setWest(false);
+                    }
+
+                    Block block = new Block(position, new Vector3D(scale), wallMaterial, mask);
 
                     GameManager.gameObjects.add(block);
                 }
@@ -82,13 +123,14 @@ public class LabyrinthGame extends ApplicationAdapter
         }
 
         // Floor
-        Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission);
-        Block floor = new Block(new Point3D(Settings.width / 2, -0.5f, Settings.height / 2), new Vector3D(Settings.width, 0.01f, Settings.height), floorMaterial);
+        Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission, Settings.floorShininess);
+        Block floor = new Block(new Point3D(Settings.width / 2, -0.5f, Settings.height / 2), new Vector3D(Settings.width, 0.01f, Settings.height), floorMaterial, new CubeMask(false, false, false, false, true, false));
         GameManager.gameObjects.add(floor);
 
         // End point
-        Material endPointMat = new Material(Settings.endPointAmbience, Settings.endPointDiffuse, Settings.endPointSpecular, Settings.endPointEmission);
-        Block endPoint = new Block(mazeGenerator.getEnd(), new Vector3D(0.5f, 0.5f, 0.5f), endPointMat);
+        Material endPointMat = new Material(Settings.endPointAmbience, Settings.endPointDiffuse, Settings.endPointSpecular, Settings.endPointEmission, Settings.endPointShininess);
+
+        Block endPoint = new Block(GameManager.mazeGenerator.getEnd(), new Vector3D(0.5f, 0.5f, 0.5f), endPointMat, new CubeMask());
         GameManager.gameObjects.add(endPoint);
 
         // Minimap
@@ -96,8 +138,8 @@ public class LabyrinthGame extends ApplicationAdapter
         orthoCam.setOrthographicProjection(-5, 5, -5, 5, 3f, 100);
 
         // Player
-        Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission);
-        player = new Player(mazeGenerator.getStart(), new Vector3D(0.5f, 1f, 0.5f), Settings.playerSpeed, playerMat);
+        Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission, Settings.playerShininess);
+        player = new Player(GameManager.mazeGenerator.getStart(), new Vector3D(0.5f, 1f, 0.5f), Settings.playerSpeed, playerMat);
 	}
 
 	private void input(float deltaTime)
@@ -208,12 +250,12 @@ public class LabyrinthGame extends ApplicationAdapter
 
 			for (GameObject gameObject : GameManager.gameObjects)
             {
-                gameObject.draw();
+                gameObject.draw(viewNum);
             }
 
 			if (viewNum == 1)
 			{
-                player.draw();
+                player.draw(viewNum);
 
 			}
 		}
