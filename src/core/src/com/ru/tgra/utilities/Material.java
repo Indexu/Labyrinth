@@ -6,6 +6,7 @@ public class Material
     private Color diffuse;
     private Color specular;
     private Color emission;
+    private float transparency;
 
     private float shininess;
 
@@ -27,13 +28,14 @@ public class Material
         this.shininess = material.shininess;
     }
 
-    public Material(Color ambience, Color diffuse, Color specular, Color emission, float shininess)
+    public Material(Color ambience, Color diffuse, Color specular, Color emission, float shininess, float transparency)
     {
         this.ambience = ambience;
         this.diffuse = diffuse;
         this.specular = specular;
         this.emission = emission;
         this.shininess = shininess;
+        this.transparency = transparency;
     }
 
     public Color getAmbience()
@@ -84,5 +86,15 @@ public class Material
     public void setShininess(float shininess)
     {
         this.shininess = shininess;
+    }
+
+    public float getTransparency()
+    {
+        return transparency;
+    }
+
+    public void setTransparency(float transparency)
+    {
+        this.transparency = transparency;
     }
 }

@@ -56,10 +56,10 @@ public class LabyrinthGame extends ApplicationAdapter
 
 		// Light
 		Point3D lightPos = new Point3D(Settings.width / 2, 10.0f, Settings.height / 2);
-		light = new Light(lightPos, Settings.lightAmbience, Settings.lightDiffuse, Settings.lightSpecular);
+		light = new Light(lightPos, Settings.lightColor);
 
 		// Walls
-        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission, Settings.wallShininess);
+        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission, Settings.wallShininess, Settings.floorTransparency);
         Vector3D scale = new Vector3D(1f, 2f, 1f);
 
         for (int i = 0; i < Settings.height; i++)
@@ -123,12 +123,12 @@ public class LabyrinthGame extends ApplicationAdapter
         }
 
         // Floor
-        Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission, Settings.floorShininess);
+        Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission, Settings.floorShininess, Settings.wallTransparency);
         Block floor = new Block(new Point3D(Settings.width / 2, -0.5f, Settings.height / 2), new Vector3D(Settings.width, 0.01f, Settings.height), floorMaterial, new CubeMask(false, false, false, false, true, false));
         GameManager.gameObjects.add(floor);
 
         // End point
-        Material endPointMat = new Material(Settings.endPointAmbience, Settings.endPointDiffuse, Settings.endPointSpecular, Settings.endPointEmission, Settings.endPointShininess);
+        Material endPointMat = new Material(Settings.endPointAmbience, Settings.endPointDiffuse, Settings.endPointSpecular, Settings.endPointEmission, Settings.endPointShininess, Settings.endPointTransparency);
 
         Block endPoint = new Block(GameManager.mazeGenerator.getEnd(), new Vector3D(0.5f, 0.5f, 0.5f), endPointMat, new CubeMask());
         GameManager.gameObjects.add(endPoint);
@@ -138,7 +138,7 @@ public class LabyrinthGame extends ApplicationAdapter
         orthoCam.setOrthographicProjection(-5, 5, -5, 5, 3f, 100);
 
         // Player
-        Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission, Settings.playerShininess);
+        Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission, Settings.playerShininess, Settings.playerTransparency);
         player = new Player(GameManager.mazeGenerator.getStart(), new Vector3D(0.5f, 1f, 0.5f), Settings.playerSpeed, playerMat);
 	}
 

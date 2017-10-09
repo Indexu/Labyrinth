@@ -20,11 +20,12 @@ public class Settings
 
     /* === Colors === */
     // Walls
-    public static final Color wallAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+    public static final Color wallAmbience = new Color(0.2f, 0.2f, 0.2f, 1.0f);
     public static final Color wallDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color wallSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color wallEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final float wallShininess = 128f;
+    public static final float wallTransparency = 1f;
 
     // Floor
     public static final Color floorAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -32,6 +33,7 @@ public class Settings
     public static final Color floorSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color floorEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final float floorShininess = Float.MAX_VALUE;
+    public static final float floorTransparency = 1f;
 
     // End point
     public static final Color endPointAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -39,6 +41,7 @@ public class Settings
     public static final Color endPointSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color endPointEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final float endPointShininess = 128f;
+    public static final float endPointTransparency = 1f;
 
     // Player
     public static final Color playerAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
@@ -46,10 +49,9 @@ public class Settings
     public static final Color playerSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color playerEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final float playerShininess = 128f;
+    public static final float playerTransparency = 1f;
 
     // Light
-    public static final float globalAmbience = 0f;
-    public static final Color lightAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-    public static final Color lightDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final Color lightSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    public static final float globalAmbience = 0.5f;
+    public static final Color lightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 }

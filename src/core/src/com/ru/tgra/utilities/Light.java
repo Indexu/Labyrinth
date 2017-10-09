@@ -3,24 +3,18 @@ package com.ru.tgra.utilities;
 public class Light
 {
     private Point3D position;
-    private Color ambience;
-    private Color diffuse;
-    private Color specualar;
+    private Color color;
 
     public Light()
     {
         position = new Point3D();
-        ambience = new Color();
-        diffuse = new Color();
-        specualar = new Color();
+        color = new Color();
     }
 
-    public Light(Point3D position, Color ambience, Color diffuse, Color specualar)
+    public Light(Point3D position, Color color)
     {
         this.position = position;
-        this.ambience = ambience;
-        this.diffuse = diffuse;
-        this.specualar = specualar;
+        this.color = color;
     }
 
     public Point3D getPosition()
@@ -33,32 +27,13 @@ public class Light
         this.position = position;
     }
 
-    public Color getAmbience()
+    public Color getColor()
     {
-        return ambience;
+        return color;
     }
 
-    public void setAmbience(Color ambience)
+    public void setColor(Color color)
     {
-        this.ambience = ambience;
-    }
-
-    public Color getDiffuse()
-    {
-        return diffuse;
-    }
-
-    public void setDiffuse(Color diffuse)
-    {
-        this.diffuse = diffuse;
-    }
-
-    public Color getSpecualar() {
-        return specualar;
-    }
-
-    public void setSpecualar(Color specualar)
-    {
-        this.specualar = specualar;
+        this.color = color;
     }
 }

@@ -21,13 +21,12 @@ public class Shader
     private int shininessFactorLoc;
     private int globalAmbienceLoc;
     private int lightPosLoc;
-    private int lightDiffuseLoc;
-    private int lightSpecularLoc;
-    private int lightAmbienceLoc;
+    private int lightColorLoc;
     private int materialDiffuseLoc;
     private int materialSpecularLoc;
     private int materialAmbienceLoc;
     private int materialEmissionLoc;
+    private int materialTransparencyLoc;
 
     private int modelMatrixLoc;
     private int viewMatrixLoc;
@@ -73,13 +72,12 @@ public class Shader
         shininessFactorLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_shininessFactor");
         globalAmbienceLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_globalAmbience");
 
-        lightDiffuseLoc			= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightDiffuse");
-        lightSpecularLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightSpecular");
-        lightAmbienceLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightAmbience");
+        lightColorLoc			= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightColor");
         materialDiffuseLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialDiffuse");
         materialSpecularLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialSpecular");
         materialAmbienceLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialAmbience");
         materialEmissionLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialEmission");
+        materialTransparencyLoc = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialTransparency");
 
         Gdx.gl.glUseProgram(renderingProgramID);
     }
@@ -96,9 +94,7 @@ public class Shader
     public void setLight(Light light)
     {
         setLightPosition(light.getPosition());
-        setLightAmbience(light.getAmbience());
-        setLightDiffuse(light.getDiffuse());
-        setLightSpecular(light.getSpecualar());
+        setLightColor(light.getColor());
     }
 
     public void setMaterialDiffuse(Color color)
@@ -121,19 +117,14 @@ public class Shader
         Gdx.gl.glUniform4f(materialEmissionLoc, color.r, color.g, color.b, color.a);
     }
 
-    public void setLightDiffuse(Color color)
+    public void setMaterialTransparency(float transparency)
     {
-        Gdx.gl.glUniform4f(lightDiffuseLoc, color.r, color.g, color.b, color.a);
+        Gdx.gl.glUniform1f(materialTransparencyLoc, transparency);
     }
 
-    public void setLightSpecular(Color color)
+    public void setLightColor(Color color)
     {
-        Gdx.gl.glUniform4f(lightSpecularLoc, color.r, color.g, color.b, color.a);
-    }
-
-    public void setLightAmbience(Color color)
-    {
-        Gdx.gl.glUniform4f(lightAmbienceLoc, color.r, color.g, color.b, color.a);
+        Gdx.gl.glUniform4f(lightColorLoc, color.r, color.g, color.b, color.a);
     }
 
     public void setShininessFactor(float f)
