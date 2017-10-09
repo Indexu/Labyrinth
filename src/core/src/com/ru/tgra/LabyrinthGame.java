@@ -189,26 +189,26 @@ public class LabyrinthGame extends ApplicationAdapter
             player.moveBack();
 		}
 
-		// Debug
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-        {
-            player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.E))
-        {
-            player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.Q))
-        {
-            player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
-        }
+//		// Debug
+//        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+//        {
+//            player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+//        {
+//            player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.E))
+//        {
+//            player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.Q))
+//        {
+//            player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
+//        }
 	}
 
 	private void update(float deltaTime)

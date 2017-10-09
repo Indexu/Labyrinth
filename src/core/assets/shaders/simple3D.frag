@@ -23,14 +23,10 @@ void main()
 {
     // Lighting
 
-    vec4 n = normalize(v_n);
-    vec4 s = normalize(v_s);
-    vec4 h = normalize(v_h);
-
-	float lampert = dot(n, s) / (length(n) * length(s));
+	float lampert = dot(v_n, v_s) / (length(v_n) * length(v_s));
 	lampert = ((lampert < 0.0) ? 0.0 : lampert);
 
-	float phong = dot(n, h) / (length(n) * length(h));
+	float phong = dot(v_n, v_h) / (length(v_n) * length(v_h));
     phong = (phong < 0.0 ? 0.0 : phong);
     phong = pow(phong, u_shininessFactor);
 

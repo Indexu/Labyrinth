@@ -23,7 +23,7 @@ public class Settings
     public static final Color wallAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final Color wallDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color wallSpecular = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final Color wallEmission = new Color(0.2f, 0.2f, 0.2f, 1.0f);
+    public static final Color wallEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final float wallShininess = 128f;
 
     // Floor
