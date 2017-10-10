@@ -12,8 +12,8 @@ public class Settings
 
     /* === Maze settings === */
     // Height and width MUST both be odd numbers
-    public static final int height = 25;
-    public static final int width = 25;
+    public static final int height = 15;
+    public static final int width = 15;
 
     /* === Player settings === */
     public static final float playerFOV = 60f;
@@ -25,7 +25,7 @@ public class Settings
     public static final Color wallAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final Color wallDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
     public static final Color wallSpecular = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-    public static final Color wallEmission = new Color(0.0f, 0.0f, 0.0f, 0.0f);
+    public static final Color wallEmission = new Color(0.5f, 0.5f, 0.5f, 0.5f);
     public static final float wallShininess = 128f;
     public static final float wallTransparency = 1f;
 
@@ -54,7 +54,7 @@ public class Settings
     public static final float playerTransparency = 1f;
 
     /* === Lights === */
-    public static final int numberOfLights = 4; // !!!MUST MATCH IN THE SHADER!!!
+    public static final int numberOfLights = 2; // !!!MUST MATCH IN THE SHADER!!!
     public static final Color globalAmbience = new Color(0.5f, 0.0f, 0.0f, 1.0f);
 
     // Helmet light

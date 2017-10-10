@@ -3,7 +3,7 @@
 precision mediump float;
 #endif
 
-const int numberOfLights = 1;
+const int numberOfLights = 2;
 
 struct light
 {

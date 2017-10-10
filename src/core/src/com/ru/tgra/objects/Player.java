@@ -105,20 +105,11 @@ public class Player extends GameObject
 
     private void wallCollision()
     {
-        System.out.print("\r                                                                                                                   \r");
-
-        System.out.print("Pos: " + position);
-
         int x = (int) (position.x + 0.5f);
         int y = (int) (position.z + 0.5f);
 
-        System.out.format(" | Maze Pos: (%d, %d)", x, y);
-
-
         float unitX = (position.x - ((float)(int)position.x) + 0.5f) % 1f;
         float unitZ = (position.z - ((float)(int)position.z) + 0.5f) % 1f;
-
-        System.out.format(" | Unit Pos: (%.3f, %.3f)", unitX, unitZ);
 
         if (0 <= x && x < GameManager.mazeWalls.length && 0 <= y && y < GameManager.mazeWalls[0].length)
         {
@@ -127,11 +118,6 @@ public class Player extends GameObject
             float top = unitZ + radius;
             float bottom = unitZ - radius;
             boolean collided = false;
-
-            System.out.format(" | Top: %.3f", top);
-            System.out.format(" | Right: %.3f", right);
-            System.out.format(" | Bottom: %.3f", bottom);
-            System.out.format(" | Left: %.3f", left);
 
             // Check right
             if (right < 0 && x != 0 && GameManager.mazeWalls[x-1][y])
@@ -190,10 +176,6 @@ public class Player extends GameObject
                     cornerCollision(v);
                 }
             }
-
-            System.out.flush();
-
-            //System.out.println("=========");
         }
     }
 

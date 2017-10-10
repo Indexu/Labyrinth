@@ -12,6 +12,7 @@ import com.ru.tgra.shapes.CoordFrameGraphic;
 import com.ru.tgra.shapes.SincGraphic;
 import com.ru.tgra.shapes.SphereGraphic;
 import com.ru.tgra.utilities.*;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 
 public class LabyrinthGame extends ApplicationAdapter
 {
@@ -25,7 +26,6 @@ public class LabyrinthGame extends ApplicationAdapter
 	private float oldMouseY;
 
 	private Light headLight;
-	private Light minimapLight;
 
 	@Override
 	public void create ()

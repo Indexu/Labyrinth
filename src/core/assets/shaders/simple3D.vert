@@ -2,7 +2,7 @@
 precision mediump float;
 #endif
 
-const int numberOfLights = 1;
+const int numberOfLights = 2;
 
 attribute vec3 a_position;
 attribute vec3 a_normal;
