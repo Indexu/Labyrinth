@@ -34,7 +34,13 @@ public class LabyrinthGame extends ApplicationAdapter
 		GameManager.createMaze();
 
 		// Light
-		headLight = new Light(Settings.lightPosition, Settings.lightColor, Settings.lightDirection, Settings.lightSpotFactor, Settings.lightConstantAttenuation, Settings.lightLinearAttenuation, Settings.lightQuadraticAttenuation);
+		headLight = new Light();
+		headLight.setID(0);
+        headLight.setColor(Settings.helmetLightColor);
+        headLight.setSpotFactor(Settings.helmetLightSpotFactor);
+        headLight.setConstantAttenuation(Settings.helmetConstantAttenuation);
+        headLight.setLinearAttenuation(Settings.helmetLightLinearAttenuation);
+        headLight.setQuadraticAttenuation(Settings.helmetLightQuadraticAttenuation);
 
         // Floor
         Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission, Settings.floorShininess, Settings.wallTransparency);

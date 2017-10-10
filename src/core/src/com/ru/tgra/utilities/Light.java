@@ -2,6 +2,7 @@ package com.ru.tgra.utilities;
 
 public class Light
 {
+    private int ID;
     private Point3D position;
     private Color color;
     private Vector3D direction;
@@ -12,6 +13,7 @@ public class Light
 
     public Light()
     {
+        ID = 0;
         position = new Point3D();
         color = new Color();
         direction = new Vector3D();
@@ -21,8 +23,9 @@ public class Light
         quadraticAttenuation = 0;
     }
 
-    public Light(Point3D position, Color color, Vector3D direction, float spotFactor, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
+    public Light(int ID, Point3D position, Color color, Vector3D direction, float spotFactor, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
     {
+        this.ID = ID;
         this.position = position;
         this.color = color;
         this.direction = direction;
@@ -30,6 +33,16 @@ public class Light
         this.constantAttenuation = constantAttenuation;
         this.linearAttenuation = linearAttenuation;
         this.quadraticAttenuation = quadraticAttenuation;
+    }
+
+    public int getID()
+    {
+        return ID;
+    }
+
+    public void setID(int ID)
+    {
+        this.ID = ID;
     }
 
     public Point3D getPosition()

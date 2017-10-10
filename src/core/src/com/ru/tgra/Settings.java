@@ -20,7 +20,7 @@ public class Settings
     public static final float playerSpeed = 1f;
     public static final float playerLookSensitivity = 100f;
 
-    /* === Colors === */
+    /* === Materials === */
     // Walls
     public static final Color wallAmbience = new Color(0.0f, 0.0f, 0.0f, 0.0f);
     public static final Color wallDiffuse = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -53,13 +53,14 @@ public class Settings
     public static final float playerShininess = 128f;
     public static final float playerTransparency = 1f;
 
-    // Light
-    public static final Color globalAmbience = new Color(0.5f, 0.0f, 0.0f, 1.0f);;
-    public static final Color lightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final Point3D lightPosition = new Point3D(Settings.width / 2, 10.0f, Settings.height / 2);
-    public static final Vector3D lightDirection = new Vector3D(0.0f, -1.0f, 0.0f);
-    public static final float lightSpotFactor = 7.0f;
-    public static final float lightConstantAttenuation = 0.3f;
-    public static final float lightLinearAttenuation = 0.7f;
-    public static final float lightQuadraticAttenuation = 0.3f;
+    /* === Lights === */
+    public static final int numberOfLights = 4; // !!!MUST MATCH IN THE SHADER!!!
+    public static final Color globalAmbience = new Color(0.5f, 0.0f, 0.0f, 1.0f);
+
+    // Helmet light
+    public static final Color helmetLightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    public static final float helmetLightSpotFactor = 7.0f;
+    public static final float helmetConstantAttenuation = 0.3f;
+    public static final float helmetLightLinearAttenuation = 0.7f;
+    public static final float helmetLightQuadraticAttenuation = 0.3f;
 }

@@ -2,6 +2,8 @@
 precision mediump float;
 #endif
 
+const int numberOfLights = 1;
+
 attribute vec3 a_position;
 attribute vec3 a_normal;
 
@@ -9,12 +11,12 @@ uniform mat4 u_modelMatrix;
 uniform mat4 u_viewMatrix;
 uniform mat4 u_projectionMatrix;
 
-uniform vec4 u_lightPosition;
+uniform vec4 u_lightPosition[numberOfLights];
 uniform vec4 u_eyePosition;
 
 varying vec4 v_n;
-varying vec4 v_s;
-varying vec4 v_h;
+varying vec4 v_s[numberOfLights];
+varying vec4 v_h[numberOfLights];
 
 void main()
 {
@@ -27,10 +29,13 @@ void main()
 	// Global coordinates
 
 	v_n = normal;
-    v_s = u_lightPosition - position;
+	vec4 v = u_eyePosition - position;
 
-    vec4 v = u_eyePosition - position;
-    v_h = v_s + v;
+	for (int i = 0; i < numberOfLights; i++)
+	{
+	    v_s[i] = u_lightPosition[i] - position;
+	    v_h[i] = v_s[i] + v;
+	}
 
 	position = u_viewMatrix * position;
 	// normal = u_viewMatrix * normal;

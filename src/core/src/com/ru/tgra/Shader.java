@@ -17,13 +17,13 @@ public class Shader
     private int eyePosLoc;
     private int shininessFactorLoc;
     private int globalAmbienceLoc;
-    private int lightPosLoc;
-    private int spotLight1ColorLoc;
-    private int spotLight1DirectionLoc;
-    private int spotLight1spotFactorLoc;
-    private int spotLight1constAttLoc;
-    private int spotLight1linearAttLoc;
-    private int spotLight1quadAttLoc;
+    private int[] lightPosLoc;
+    private int[] lightColorLoc;
+    private int[] lightDirectionLoc;
+    private int[] lightSpotFactorLoc;
+    private int[] lightConstAttLoc;
+    private int[] lightLinearAttLoc;
+    private int[] lightQuadAttLoc;
     private int materialDiffuseLoc;
     private int materialSpecularLoc;
     private int materialAmbienceLoc;
@@ -69,23 +69,34 @@ public class Shader
         projectionMatrixLoc	    = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_projectionMatrix");
 
         eyePosLoc				= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_eyePosition");
-        lightPosLoc				= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightPosition");
 
-        shininessFactorLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_shininessFactor");
+        lightPosLoc = new int[Settings.numberOfLights];
+        lightColorLoc = new int[Settings.numberOfLights];
+        lightDirectionLoc = new int[Settings.numberOfLights];
+        lightSpotFactorLoc = new int[Settings.numberOfLights];
+        lightConstAttLoc = new int[Settings.numberOfLights];
+        lightLinearAttLoc = new int[Settings.numberOfLights];
+        lightQuadAttLoc = new int[Settings.numberOfLights];
+
+        for (int i = 0; i < Settings.numberOfLights; i++)
+        {
+            lightPosLoc[i]				= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lightPosition[" + i + "]");
+            lightColorLoc[i]		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].color");
+            lightDirectionLoc[i]	= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].direction");
+            lightSpotFactorLoc[i] = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].spotFactor");
+            lightConstAttLoc[i]   = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].constantAttenuation");
+            lightLinearAttLoc[i]  = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].linearAttenuation");
+            lightQuadAttLoc[i]    = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_lights[" + i + "].quadraticAttenuation");
+        }
 
         globalAmbienceLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_globalAmbience");
-        spotLight1ColorLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.color");
-        spotLight1DirectionLoc	= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.direction");
-        spotLight1spotFactorLoc = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.spotFactor");
-        spotLight1constAttLoc   = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.constantAttenuation");
-        spotLight1linearAttLoc  = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.linearAttenuation");
-        spotLight1quadAttLoc    = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_spotLight1.quadraticAttenuation");
 
         materialDiffuseLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialDiffuse");
         materialSpecularLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialSpecular");
         materialAmbienceLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialAmbience");
         materialEmissionLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialEmission");
         materialTransparencyLoc = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_materialTransparency");
+        shininessFactorLoc		= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_shininessFactor");
 
         Gdx.gl.glUseProgram(renderingProgramID);
     }
@@ -102,13 +113,13 @@ public class Shader
 
     public void setLight(Light light)
     {
-        setLightPosition(light.getPosition());
-        setLightColor(light.getColor());
-        setLightDirection(light.getDirection());
-        setSpotFactor(light.getSpotFactor());
-        setConstantAttenuation(light.getConstantAttenuation());
-        setLinearAttenuation(light.getLinearAttenuation());
-        setQuadraticAttenuation(light.getQuadraticAttenuation());
+        setLightPosition(light.getID(), light.getPosition());
+        setLightColor(light.getID(), light.getColor());
+        setLightDirection(light.getID(), light.getDirection());
+        setSpotFactor(light.getID(), light.getSpotFactor());
+        setConstantAttenuation(light.getID(), light.getConstantAttenuation());
+        setLinearAttenuation(light.getID(), light.getLinearAttenuation());
+        setQuadraticAttenuation(light.getID(), light.getQuadraticAttenuation());
     }
 
     public void setMaterialDiffuse(Color color)
@@ -136,49 +147,50 @@ public class Shader
         Gdx.gl.glUniform1f(materialTransparencyLoc, transparency);
     }
 
-    public void setLightColor(Color color)
-    {
-        Gdx.gl.glUniform4f(spotLight1ColorLoc, color.r, color.g, color.b, color.a);
-    }
-
-    public void setLightDirection(Vector3D direction)
-    {
-        Gdx.gl.glUniform4f(spotLight1DirectionLoc, direction.x, direction.y, direction.z, 0f);
-    }
-
-    public void setSpotFactor(float f)
-    {
-        Gdx.gl.glUniform1f(spotLight1spotFactorLoc, f);
-    }
-
-    public void setConstantAttenuation(float f)
-    {
-        Gdx.gl.glUniform1f(spotLight1constAttLoc, f);
-    }
-
-    public void setLinearAttenuation(float f)
-    {
-        Gdx.gl.glUniform1f(spotLight1linearAttLoc, f);
-    }
-
-    public void setQuadraticAttenuation(float f)
-    {
-        Gdx.gl.glUniform1f(spotLight1quadAttLoc, f);
-    }
-
-    public void setGlobalAmbience(Color color)
-    {
-        Gdx.gl.glUniform4f(globalAmbienceLoc, color.r, color.g, color.b, color.a);
-    }
-
     public void setShininessFactor(float f)
     {
         Gdx.gl.glUniform1f(shininessFactorLoc, f);
     }
 
-    public void setLightPosition(Point3D position)
+
+    public void setLightPosition(int lightID, Point3D position)
     {
-        Gdx.gl.glUniform4f(lightPosLoc, position.x, position.y, position.z, 1.0f);
+        Gdx.gl.glUniform4f(lightPosLoc[lightID], position.x, position.y, position.z, 1.0f);
+    }
+
+    public void setLightColor(int lightID, Color color)
+    {
+        Gdx.gl.glUniform4f(lightColorLoc[lightID], color.r, color.g, color.b, color.a);
+    }
+
+    public void setLightDirection(int lightID, Vector3D direction)
+    {
+        Gdx.gl.glUniform4f(lightDirectionLoc[lightID], direction.x, direction.y, direction.z, 0f);
+    }
+
+    public void setSpotFactor(int lightID, float f)
+    {
+        Gdx.gl.glUniform1f(lightSpotFactorLoc[lightID], f);
+    }
+
+    public void setConstantAttenuation(int lightID, float f)
+    {
+        Gdx.gl.glUniform1f(lightConstAttLoc[lightID], f);
+    }
+
+    public void setLinearAttenuation(int lightID, float f)
+    {
+        Gdx.gl.glUniform1f(lightLinearAttLoc[lightID], f);
+    }
+
+    public void setQuadraticAttenuation(int lightID, float f)
+    {
+        Gdx.gl.glUniform1f(lightQuadAttLoc[lightID], f);
+    }
+
+    public void setGlobalAmbience(Color color)
+    {
+        Gdx.gl.glUniform4f(globalAmbienceLoc, color.r, color.g, color.b, color.a);
     }
 
     public void setEyePosition(Point3D position)
