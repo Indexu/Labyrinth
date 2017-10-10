@@ -5,6 +5,7 @@ import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
 import com.ru.tgra.shapes.BoxGraphic;
+import com.ru.tgra.shapes.SphereGraphic;
 import com.ru.tgra.utilities.Material;
 import com.ru.tgra.utilities.ModelMatrix;
 import com.ru.tgra.utilities.Point3D;
@@ -29,7 +30,7 @@ public class Player extends GameObject
         this.speed = speed;
         this.material = material;
 
-        radius = scale.x * 0.5f;
+        radius = 0.25f;
 
         Point3D center = new Point3D(position);
         center.z += 1;
@@ -49,10 +50,10 @@ public class Player extends GameObject
         camera.slide(movementVector.x, movementVector.y, movementVector.z);
         camera.yaw(yaw);
 
+        wallCollision();
+
         movementVector.set(0, 0, 0);
         yaw = 0;
-
-        wallCollision();
     }
 
     public void draw(int viewportID)
@@ -64,7 +65,7 @@ public class Player extends GameObject
         GraphicsEnvironment.shader.setModelMatrix(ModelMatrix.main.getMatrix());
         GraphicsEnvironment.shader.setMaterial(material);
 
-        BoxGraphic.drawSolidCube();
+        SphereGraphic.drawSolidSphere();
     }
 
     public void moveLeft()
@@ -104,51 +105,108 @@ public class Player extends GameObject
 
     private void wallCollision()
     {
+        System.out.print("\r                                                                                                                   \r");
+
+        System.out.print("Pos: " + position);
+
         int x = (int) (position.x + 0.5f);
         int y = (int) (position.z + 0.5f);
+
+        System.out.format(" | Maze Pos: (%d, %d)", x, y);
+
 
         float unitX = (position.x - ((float)(int)position.x) + 0.5f) % 1f;
         float unitZ = (position.z - ((float)(int)position.z) + 0.5f) % 1f;
 
+        System.out.format(" | Unit Pos: (%.3f, %.3f)", unitX, unitZ);
+
         if (0 <= x && x < GameManager.mazeWalls.length && 0 <= y && y < GameManager.mazeWalls[0].length)
         {
-            float left = unitX - radius;
-            float right = unitX + radius;
-            float top = unitZ - radius;
-            float bottom = unitZ + radius;
+            float left = unitX + radius;
+            float right = unitX - radius;
+            float top = unitZ + radius;
+            float bottom = unitZ - radius;
             boolean collided = false;
 
-            // Check left
-            if (left < 0 && x != 0 && GameManager.mazeWalls[x-1][y])
+            System.out.format(" | Top: %.3f", top);
+            System.out.format(" | Right: %.3f", right);
+            System.out.format(" | Bottom: %.3f", bottom);
+            System.out.format(" | Left: %.3f", left);
+
+            // Check right
+            if (right < 0 && x != 0 && GameManager.mazeWalls[x-1][y])
             {
-                position.x -= left;
+                position.x -= right;
                 collided = true;
             }
-            // Check right
-            else if (1 < right && x != GameManager.mazeWalls.length-1 && GameManager.mazeWalls[x+1][y])
+            // Check left
+            else if (1 < left && x != GameManager.mazeWalls.length-1 && GameManager.mazeWalls[x+1][y])
             {
-                position.x -= (right % 1);
+                position.x -= (left % 1);
                 collided = true;
             }
 
-            // Check top
-            if (top < 0 && y != 0 && GameManager.mazeWalls[x][y-1])
+            // Check bottom
+            if (bottom < 0 && y != 0 && GameManager.mazeWalls[x][y-1])
             {
-                position.z -= top;
+                position.z -= bottom;
                 collided = true;
             }
-            // Check bottom
-            else if (1 < bottom && y != GameManager.mazeWalls[0].length-1 && GameManager.mazeWalls[x][y+1])
+            // Check top
+            else if (1 < top && y != GameManager.mazeWalls[0].length-1 && GameManager.mazeWalls[x][y+1])
             {
-                position.z -= (bottom % 1);
+                position.z -= (top % 1);
                 collided = true;
             }
 
             // Check diagonal
-            if (collided)
+            if (!collided)
             {
-                // TODO
+                // Top left
+                if (GameManager.mazeWalls[x+1][y+1])
+                {
+                    Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y + 0.5f));
+                    cornerCollision(v);
+                }
+
+                // Top right
+                if (GameManager.mazeWalls[x-1][y+1])
+                {
+                    Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y + 0.5f));
+                    cornerCollision(v);
+                }
+
+                // Bottom left
+                if (GameManager.mazeWalls[x+1][y-1])
+                {
+                    Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y - 0.5f));
+                    cornerCollision(v);
+                }
+
+                // Bottom right
+                if (GameManager.mazeWalls[x-1][y+1])
+                {
+                    Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y - 0.5f));
+                    cornerCollision(v);
+                }
             }
+
+            System.out.flush();
+
+            //System.out.println("=========");
+        }
+    }
+
+    private void cornerCollision(Vector3D cornerVector)
+    {
+        float distance = cornerVector.length();
+
+        if (distance < radius)
+        {
+            cornerVector.divide(distance);
+            cornerVector.scale(radius - distance);
+
+            position.add(cornerVector);
         }
     }
 }

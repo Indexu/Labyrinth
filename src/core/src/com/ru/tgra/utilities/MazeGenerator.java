@@ -24,7 +24,10 @@ public class MazeGenerator
     private int height;
     private Random rand;
 
-    public MazeGenerator(int width, int height)
+    public MazeGenerator()
+    { }
+
+    public void generateMaze(int width, int height)
     {
         this.width = width;
         this.height = height;
@@ -58,6 +61,16 @@ public class MazeGenerator
     public Point3D getEnd()
     {
         return end;
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public int getHeight()
+    {
+        return height;
     }
 
     public void printMaze()

@@ -26,11 +26,11 @@ void main()
 
 	// Global coordinates
 
-	v_n = normalize(normal);
+	v_n = normal;
     v_s = u_lightPosition - position;
 
     vec4 v = u_eyePosition - position;
-    v_h = normalize(v_s + v);
+    v_h = v_s + v;
 
 	position = u_viewMatrix * position;
 	// normal = u_viewMatrix * normal;

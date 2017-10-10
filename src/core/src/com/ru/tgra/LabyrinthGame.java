@@ -13,9 +13,6 @@ import com.ru.tgra.shapes.SincGraphic;
 import com.ru.tgra.shapes.SphereGraphic;
 import com.ru.tgra.utilities.*;
 
-import java.util.Random;
-import java.util.Set;
-
 public class LabyrinthGame extends ApplicationAdapter
 {
 	private Shader shader;
@@ -27,100 +24,17 @@ public class LabyrinthGame extends ApplicationAdapter
 	private float oldMouseX;
 	private float oldMouseY;
 
-	private Random rand;
-	private float angle = 0;
-
-	private Light light;
+	private Light headLight;
+	private Light minimapLight;
 
 	@Override
 	public void create ()
 	{
-		GraphicsEnvironment.init();
-		GameManager.init();
-
-		shader = GraphicsEnvironment.shader;
-
-		BoxGraphic.create(shader.getVertexPointer(), shader.getNormalPointer());
-		SphereGraphic.create(shader.getVertexPointer(), shader.getNormalPointer());
-		SincGraphic.create(shader.getVertexPointer());
-		CoordFrameGraphic.create(shader.getVertexPointer());
-
-		ModelMatrix.main = new ModelMatrix();
-		ModelMatrix.main.loadIdentityMatrix();
-		shader.setModelMatrix(ModelMatrix.main.getMatrix());
-
-		rand = new Random();
-
-		oldMouseX = Gdx.input.getX();
-		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+		init();
+		GameManager.createMaze();
 
 		// Light
-		Point3D lightPos = new Point3D(Settings.width / 2, 10.0f, Settings.height / 2);
-		light = new Light(lightPos, Settings.lightColor);
-
-		// Walls
-        Material wallMaterial = new Material(Settings.wallAmbience, Settings.wallDiffuse, Settings.wallSpecular, Settings.wallEmission, Settings.wallShininess, Settings.floorTransparency);
-        Vector3D scale = new Vector3D(1f, 2f, 1f);
-
-        for (int i = 0; i < Settings.height; i++)
-        {
-            for (int j = 0; j < Settings.width; j++)
-            {
-                if (GameManager.mazeWalls[i][j])
-                {
-                    Point3D position = new Point3D(i, 0.5f, j);
-
-                    /* === Cube mask === */
-                    CubeMask mask = new CubeMask();
-                    mask.setBottom(false);
-                    mask.setTop(false);
-
-                    // North
-                    if (i != Settings.height-1)
-                    {
-                        mask.setNorth(!GameManager.mazeWalls[i+1][j]);
-                    }
-                    else
-                    {
-                        mask.setNorth(false);
-                    }
-
-                    // South
-                    if (i != 0)
-                    {
-                        mask.setSouth(!GameManager.mazeWalls[i-1][j]);
-                    }
-                    else
-                    {
-                        mask.setSouth(false);
-                    }
-
-                    // East
-                    if (j != Settings.width-1)
-                    {
-                        mask.setEast(!GameManager.mazeWalls[i][j+1]);
-                    }
-                    else
-                    {
-                        mask.setEast(false);
-                    }
-
-                    // West
-                    if (j != 0)
-                    {
-                        mask.setWest(!GameManager.mazeWalls[i][j-1]);
-                    }
-                    else
-                    {
-                        mask.setWest(false);
-                    }
-
-                    Block block = new Block(position, new Vector3D(scale), wallMaterial, mask);
-
-                    GameManager.gameObjects.add(block);
-                }
-            }
-        }
+		headLight = new Light(Settings.lightPosition, Settings.lightColor, Settings.lightDirection, Settings.lightSpotFactor, Settings.lightConstantAttenuation, Settings.lightLinearAttenuation, Settings.lightQuadraticAttenuation);
 
         // Floor
         Material floorMaterial = new Material(Settings.floorAmbience, Settings.floorDiffuse, Settings.floorSpecular, Settings.floorEmission, Settings.floorShininess, Settings.wallTransparency);
@@ -139,7 +53,7 @@ public class LabyrinthGame extends ApplicationAdapter
 
         // Player
         Material playerMat = new Material(Settings.playerAmbience, Settings.playerDiffuse, Settings.playerSpecular, Settings.playerEmission, Settings.playerShininess, Settings.playerTransparency);
-        player = new Player(GameManager.mazeGenerator.getStart(), new Vector3D(0.5f, 1f, 0.5f), Settings.playerSpeed, playerMat);
+        player = new Player(GameManager.mazeGenerator.getStart(), new Vector3D(0.25f, 0.25f, 0.25f), Settings.playerSpeed, playerMat);
 	}
 
 	private void input(float deltaTime)
@@ -189,26 +103,36 @@ public class LabyrinthGame extends ApplicationAdapter
             player.moveBack();
 		}
 
-//		// Debug
-//        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-//        {
-//            player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-//        {
-//            player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.E))
-//        {
-//            player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.Q))
-//        {
-//            player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
-//        }
+		// Debug
+        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+        {
+            player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        {
+            player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.E))
+        {
+            player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.Q))
+        {
+            player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+        {
+            player.getCamera().slide(0f, Settings.playerSpeed * deltaTime, 0f);
+        }
+
+        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+        {
+            player.getCamera().slide(0f, -Settings.playerSpeed * deltaTime, 0f);
+        }
 	}
 
 	private void update(float deltaTime)
@@ -231,7 +155,7 @@ public class LabyrinthGame extends ApplicationAdapter
 			if (viewNum == 0)
 			{
 				Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-				player.getCamera().setPerspectiveProjection(Settings.playerFOV, Gdx.graphics.getWidth() / Gdx.graphics.getHeight(), 0.1f, 10000000.0f);
+				player.getCamera().setPerspectiveProjection(Settings.playerFOV, Gdx.graphics.getWidth() / Gdx.graphics.getHeight(), 0.1f, 100.0f);
 				shader.setViewMatrix(player.getCamera().getViewMatrix());
 				shader.setProjectionMatrix(player.getCamera().getProjectionMatrix());
 				shader.setEyePosition(player.getCamera().eye);
@@ -240,20 +164,32 @@ public class LabyrinthGame extends ApplicationAdapter
 			{
 			    Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
 				Gdx.gl.glViewport((int)(Gdx.graphics.getWidth() * 0.65f), (int)(Gdx.graphics.getHeight() * 0.65f), Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 3);
-				orthoCam.look(new Point3D(player.getCamera().eye.x, 30.0f, player.getCamera().eye.z), player.getPosition(), new Vector3D(0, 0, -1));
+				orthoCam.look(new Point3D(player.getCamera().eye.x, 30.0f, player.getCamera().eye.z), player.getPosition(), new Vector3D(0, 0, 1));
 				shader.setViewMatrix(orthoCam.getViewMatrix());
 				shader.setProjectionMatrix(orthoCam.getProjectionMatrix());
 			}
 
             shader.setGlobalAmbience(Settings.globalAmbience);
-            shader.setLight(light);
+
+			if (viewNum == Settings.viewportIDPerspective)
+            {
+                headLight.setPosition(player.getPosition());
+                headLight.setDirection(new Vector3D(-player.getCamera().n.x, -player.getCamera().n.y, -player.getCamera().n.z));
+            }
+            else
+            {
+                headLight.getPosition().y = 3f;
+                headLight.getDirection().add(new Vector3D(0f, -1f, 0f));
+            }
+
+            shader.setLight(headLight);
 
 			for (GameObject gameObject : GameManager.gameObjects)
             {
                 gameObject.draw(viewNum);
             }
 
-			if (viewNum == 1)
+			if (viewNum == Settings.viewportIDMinimap)
 			{
                 player.draw(viewNum);
 
@@ -272,5 +208,25 @@ public class LabyrinthGame extends ApplicationAdapter
 		update(deltaTime);
 		display();
 
+	}
+
+	private void init()
+	{
+		GraphicsEnvironment.init();
+		GameManager.init();
+
+		shader = GraphicsEnvironment.shader;
+
+		BoxGraphic.create(shader.getVertexPointer(), shader.getNormalPointer());
+		SphereGraphic.create(shader.getVertexPointer(), shader.getNormalPointer());
+		SincGraphic.create(shader.getVertexPointer());
+		CoordFrameGraphic.create(shader.getVertexPointer());
+
+		ModelMatrix.main = new ModelMatrix();
+		ModelMatrix.main.loadIdentityMatrix();
+		shader.setModelMatrix(ModelMatrix.main.getMatrix());
+
+		oldMouseX = Gdx.input.getX();
+		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
 	}
 }

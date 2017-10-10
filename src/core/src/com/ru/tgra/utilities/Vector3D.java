@@ -41,6 +41,13 @@ public class Vector3D {
 		z *= S;
 	}
 
+	public void divide(float d)
+	{
+		x /= d;
+		y /= d;
+		z /= d;
+	}
+
 	public void add(Vector3D v2)
 	{
 		x += v2.x;

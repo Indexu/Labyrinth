@@ -4,17 +4,32 @@ public class Light
 {
     private Point3D position;
     private Color color;
+    private Vector3D direction;
+    private float spotFactor;
+    private float constantAttenuation;
+    private float linearAttenuation;
+    private float quadraticAttenuation;
 
     public Light()
     {
         position = new Point3D();
         color = new Color();
+        direction = new Vector3D();
+        spotFactor = 0;
+        constantAttenuation = 0;
+        linearAttenuation = 0;
+        quadraticAttenuation = 0;
     }
 
-    public Light(Point3D position, Color color)
+    public Light(Point3D position, Color color, Vector3D direction, float spotFactor, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
     {
         this.position = position;
         this.color = color;
+        this.direction = direction;
+        this.spotFactor = spotFactor;
+        this.constantAttenuation = constantAttenuation;
+        this.linearAttenuation = linearAttenuation;
+        this.quadraticAttenuation = quadraticAttenuation;
     }
 
     public Point3D getPosition()
@@ -24,7 +39,9 @@ public class Light
 
     public void setPosition(Point3D position)
     {
-        this.position = position;
+        this.position.x = position.x;
+        this.position.y = position.y;
+        this.position.z = position.z;
     }
 
     public Color getColor()
@@ -35,5 +52,55 @@ public class Light
     public void setColor(Color color)
     {
         this.color = color;
+    }
+
+    public Vector3D getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(Vector3D direction)
+    {
+        this.direction = direction;
+    }
+
+    public float getSpotFactor()
+    {
+        return spotFactor;
+    }
+
+    public void setSpotFactor(float spotFactor)
+    {
+        this.spotFactor = spotFactor;
+    }
+
+    public float getConstantAttenuation()
+    {
+        return constantAttenuation;
+    }
+
+    public void setConstantAttenuation(float constantAttenuation)
+    {
+        this.constantAttenuation = constantAttenuation;
+    }
+
+    public float getLinearAttenuation()
+    {
+        return linearAttenuation;
+    }
+
+    public void setLinearAttenuation(float linearAttenuation)
+    {
+        this.linearAttenuation = linearAttenuation;
+    }
+
+    public float getQuadraticAttenuation()
+    {
+        return quadraticAttenuation;
+    }
+
+    public void setQuadraticAttenuation(float quadraticAttenuation)
+    {
+        this.quadraticAttenuation = quadraticAttenuation;
     }
 }

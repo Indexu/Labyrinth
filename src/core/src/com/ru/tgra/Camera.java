@@ -10,9 +10,9 @@ public class Camera
 {
     public Point3D eye;
 
-    private Vector3D u;
-    private Vector3D v;
-    private Vector3D n;
+    public Vector3D u;
+    public Vector3D v;
+    public Vector3D n;
 
     private FloatBuffer matrixBuffer;
 

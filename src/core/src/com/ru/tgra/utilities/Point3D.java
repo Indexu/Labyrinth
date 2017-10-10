@@ -44,6 +44,6 @@ public class Point3D {
 	@Override
 	public String toString()
 	{
-		return "x: " + x + ", y: " + y + ", z: " + z;
+		return String.format("x: %.3f, y: %.3f, z: %.3f", x, y, z);
 	}
 }
