@@ -1,7 +1,8 @@
 package com.ru.tgra.objects;
 
-import com.ru.tgra.GraphicsEnvironment;
-import com.ru.tgra.utilities.*;
+import com.ru.tgra.models.Material;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Vector3D;
 
 public abstract class GameObject
 {

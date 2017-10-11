@@ -4,12 +4,12 @@ import com.ru.tgra.Camera;
 import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
-import com.ru.tgra.shapes.BoxGraphic;
 import com.ru.tgra.shapes.SphereGraphic;
-import com.ru.tgra.utilities.Material;
-import com.ru.tgra.utilities.ModelMatrix;
-import com.ru.tgra.utilities.Point3D;
-import com.ru.tgra.utilities.Vector3D;
+import com.ru.tgra.models.Material;
+import com.ru.tgra.models.ModelMatrix;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Vector3D;
+import com.ru.tgra.utilities.CollisionsUtil;
 
 public class Player extends GameObject
 {
@@ -49,8 +49,6 @@ public class Player extends GameObject
 
         camera.slide(movementVector.x, movementVector.y, movementVector.z);
         camera.yaw(yaw);
-
-        wallCollision();
 
         movementVector.set(0, 0, 0);
         yaw = 0;
@@ -118,92 +116,8 @@ public class Player extends GameObject
         return (int) (position.z + 0.5f);
     }
 
-    private void wallCollision()
+    public float getRadius()
     {
-        int x = getMazeX();
-        int y = getMazeY();
-
-        float unitX = (position.x - ((float)(int)position.x) + 0.5f) % 1f;
-        float unitZ = (position.z - ((float)(int)position.z) + 0.5f) % 1f;
-
-        if (0 <= x && x < GameManager.mazeWalls.length-1 && 0 <= y && y < GameManager.mazeWalls[0].length-1)
-        {
-            float left = unitX + radius;
-            float right = unitX - radius;
-            float top = unitZ + radius;
-            float bottom = unitZ - radius;
-            boolean collided = false;
-
-            // Check right
-            if (right < 0 && x != 0 && GameManager.mazeWalls[x-1][y])
-            {
-                position.x -= right;
-                collided = true;
-            }
-            // Check left
-            else if (1 < left && x != GameManager.mazeWalls.length-1 && GameManager.mazeWalls[x+1][y])
-            {
-                position.x -= (left % 1);
-                collided = true;
-            }
-
-            // Check bottom
-            if (bottom < 0 && y != 0 && GameManager.mazeWalls[x][y-1])
-            {
-                position.z -= bottom;
-                collided = true;
-            }
-            // Check top
-            else if (1 < top && y != GameManager.mazeWalls[0].length-1 && GameManager.mazeWalls[x][y+1])
-            {
-                position.z -= (top % 1);
-                collided = true;
-            }
-
-            // Check diagonal
-            if (!collided)
-            {
-                // Top left
-                if (GameManager.mazeWalls[x+1][y+1])
-                {
-                    Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y + 0.5f));
-                    cornerCollision(v);
-                }
-
-                // Top right
-                if (GameManager.mazeWalls[x-1][y+1])
-                {
-                    Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y + 0.5f));
-                    cornerCollision(v);
-                }
-
-                // Bottom left
-                if (GameManager.mazeWalls[x+1][y-1])
-                {
-                    Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y - 0.5f));
-                    cornerCollision(v);
-                }
-
-                // Bottom right
-                if (GameManager.mazeWalls[x-1][y+1])
-                {
-                    Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y - 0.5f));
-                    cornerCollision(v);
-                }
-            }
-        }
-    }
-
-    private void cornerCollision(Vector3D cornerVector)
-    {
-        float distance = cornerVector.length();
-
-        if (distance < radius)
-        {
-            cornerVector.divide(distance);
-            cornerVector.scale(radius - distance);
-
-            position.add(cornerVector);
-        }
+        return radius;
     }
 }

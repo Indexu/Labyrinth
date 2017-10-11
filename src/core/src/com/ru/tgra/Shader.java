@@ -2,7 +2,7 @@ package com.ru.tgra;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.ru.tgra.utilities.*;
+import com.ru.tgra.models.*;
 
 import java.nio.FloatBuffer;
 

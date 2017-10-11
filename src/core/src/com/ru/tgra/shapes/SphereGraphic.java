@@ -6,77 +6,123 @@ import com.badlogic.gdx.utils.BufferUtils;
 
 import java.nio.FloatBuffer;
 
-public class SphereGraphic {
+public class SphereGraphic
+{
+    private static class SphereInfo
+    {
+        public FloatBuffer vertexBuffer;
+        public FloatBuffer normalBuffer;
+        public int stacks;
+        public int slices;
+        public int vertexCount;
+    }
 
-	private static FloatBuffer vertexBuffer;
-	private static FloatBuffer normalBuffer;
-	private static int vertexPointer;
-	private static int normalPointer;
-	private static int verticesPerCircle = 50;
+    private static SphereInfo sphere;
+    private static SphereInfo spear;
 
-	
-	private static int stacks = 6;
-	private static int slices = 12;
-	private static int vertexCount;
-	
-	public static void create(int vertexPointer, int normalPointer) {
-		SphereGraphic.vertexPointer = vertexPointer;
-		SphereGraphic.normalPointer = normalPointer;
-		//VERTEX ARRAY IS FILLED HERE
-		//float[] array = new float[2*verticesPerCircle];
-
-		vertexCount = 0;
-		float[] array = new float[(stacks)*(slices+1)*6];
-		float stackInterval = (float)Math.PI / (float)stacks;
-		float sliceInterval = 2.0f*(float)Math.PI / (float)slices;
-		float stackAngle, sliceAngle;
-		for(int stackCount = 0; stackCount < stacks; stackCount++)
-		{
-			stackAngle = stackCount * stackInterval;
-			for(int sliceCount = 0; sliceCount < slices+1; sliceCount++)
-			{
-				sliceAngle = sliceCount * sliceInterval;
-				array[vertexCount*3] = 	 (float)Math.sin(stackAngle) * (float)Math.cos(sliceAngle);
-				array[vertexCount*3 + 1] = (float)Math.cos(stackAngle);
-				array[vertexCount*3 + 2] = (float)Math.sin(stackAngle) * (float)Math.sin(sliceAngle);
-
-				array[vertexCount*3 + 3] = (float)Math.sin(stackAngle + stackInterval) * (float)Math.cos(sliceAngle);
-				array[vertexCount*3 + 4] = (float)Math.cos(stackAngle + stackInterval);
-				array[vertexCount*3 + 5] = (float)Math.sin(stackAngle + stackInterval) * (float)Math.sin(sliceAngle);
-				
-				vertexCount += 2;
-			}
-		}
-		vertexBuffer = BufferUtils.newFloatBuffer(vertexCount*3);
-		vertexBuffer.put(array);
-		vertexBuffer.rewind();
-		normalBuffer = BufferUtils.newFloatBuffer(vertexCount*3);
-		normalBuffer.put(array);
-		normalBuffer.rewind();
-	}
-
-	public static void drawSolidSphere() {
-
-		Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, vertexBuffer);
-		Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, normalBuffer);
-
-		for(int i = 0; i < vertexCount; i += (slices+1)*2)
-		{
-			Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, i, (slices+1)*2);
-		}
+    private static int vertexPointer;
+    private static int normalPointer;
+    private static int verticesPerCircle = 50;
 
 
-	}
+    private static int sphereStacks = 6;
+    private static int sphereSlices = 12;
+    private static int spearStacks = 3;
+    private static int spearSlices = 6;
+    private static int sphereVertexCount;
+    private static int spearVertexCount;
 
-	public static void drawOutlineSphere() {
-		
-		Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, vertexBuffer);
-		Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, normalBuffer);
+    public static void create(int vertexPointer, int normalPointer) {
+        SphereGraphic.vertexPointer = vertexPointer;
+        SphereGraphic.normalPointer = normalPointer;
+        //VERTEX ARRAY IS FILLED HERE
+        //float[] array = new float[2*verticesPerCircle];
 
-		for(int i = 0; i < vertexCount; i += (slices+1)*2)
-		{
-			Gdx.gl.glDrawArrays(GL20.GL_LINE_STRIP, i, (slices+1)*2);
-		}
-	}
+        sphere = new SphereInfo();
+        sphere.stacks = 6;
+        sphere.slices = 12;
+        create(sphere);
 
+        spear = new SphereInfo();
+        spear.stacks = 3;
+        spear.slices = 24;
+        create(spear);
+    }
+
+    public static void drawSolidSphere() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, sphere.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, sphere.normalBuffer);
+
+        for(int i = 0; i < sphere.vertexCount; i += (sphere.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, i, (sphere.slices+1)*2);
+        }
+    }
+
+    public static void drawOutlineSphere() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, sphere.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, sphere.normalBuffer);
+
+        for(int i = 0; i < sphere.vertexCount; i += (sphere.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_LINE_STRIP, i, (sphere.slices+1)*2);
+        }
+    }
+
+    public static void drawSolidSpear() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, spear.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, spear.normalBuffer);
+
+        for(int i = 0; i < spear.vertexCount; i += (spear.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, i, (spear.slices+1)*2);
+        }
+    }
+
+    public static void drawOutlineSpear() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, spear.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, spear.normalBuffer);
+
+        for(int i = 0; i < spear.vertexCount; i += (spear.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_LINE_STRIP, i, (spear.slices+1)*2);
+        }
+    }
+
+    private static void create(SphereInfo info)
+    {
+        info.vertexCount = 0;
+        float[] array = new float[(info.stacks)*(info.slices+1)*6];
+        float stackInterval = (float)Math.PI / (float)info.stacks;
+        float sliceInterval = 2.0f*(float)Math.PI / (float)info.slices;
+        float stackAngle, sliceAngle;
+        for(int stackCount = 0; stackCount < info.stacks; stackCount++)
+        {
+            stackAngle = stackCount * stackInterval;
+            for(int sliceCount = 0; sliceCount < info.slices+1; sliceCount++)
+            {
+                sliceAngle = sliceCount * sliceInterval;
+                array[info.vertexCount*3] = 	 (float)Math.sin(stackAngle) * (float)Math.cos(sliceAngle);
+                array[info.vertexCount*3 + 1] = (float)Math.cos(stackAngle);
+                array[info.vertexCount*3 + 2] = (float)Math.sin(stackAngle) * (float)Math.sin(sliceAngle);
+
+                array[info.vertexCount*3 + 3] = (float)Math.sin(stackAngle + stackInterval) * (float)Math.cos(sliceAngle);
+                array[info.vertexCount*3 + 4] = (float)Math.cos(stackAngle + stackInterval);
+                array[info.vertexCount*3 + 5] = (float)Math.sin(stackAngle + stackInterval) * (float)Math.sin(sliceAngle);
+
+                info.vertexCount += 2;
+            }
+        }
+
+        info.vertexBuffer = BufferUtils.newFloatBuffer(info.vertexCount*3);
+        info.vertexBuffer.put(array);
+        info.vertexBuffer.rewind();
+        info.normalBuffer = BufferUtils.newFloatBuffer(info.vertexCount*3);
+        info.normalBuffer.put(array);
+        info.normalBuffer.rewind();
+    }
 }

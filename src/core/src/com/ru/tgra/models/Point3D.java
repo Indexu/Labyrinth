@@ -1,4 +1,4 @@
-package com.ru.tgra.utilities;
+package com.ru.tgra.models;
 
 public class Point3D {
 
@@ -32,6 +32,13 @@ public class Point3D {
 		x += v.x;
 		y += v.y;
 		z += v.z;
+	}
+
+	public void set(Point3D p)
+	{
+		this.x = p.x;
+		this.y = p.y;
+		this.z = p.z;
 	}
 
 	public void set(float x, float y, float z)

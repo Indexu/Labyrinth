@@ -3,7 +3,7 @@ package com.ru.tgra.shapes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.utils.BufferUtils;
-import com.ru.tgra.utilities.CubeMask;
+import com.ru.tgra.models.CubeMask;
 
 import java.nio.FloatBuffer;
 

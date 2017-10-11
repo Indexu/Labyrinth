@@ -4,12 +4,15 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.ru.tgra.models.ModelMatrix;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Vector3D;
 import com.ru.tgra.objects.GameObject;
 import com.ru.tgra.shapes.BoxGraphic;
 import com.ru.tgra.shapes.CoordFrameGraphic;
 import com.ru.tgra.shapes.SincGraphic;
 import com.ru.tgra.shapes.SphereGraphic;
-import com.ru.tgra.utilities.*;
+import com.ru.tgra.utilities.CollisionsUtil;
 
 public class LabyrinthGame extends ApplicationAdapter
 {
@@ -25,6 +28,7 @@ public class LabyrinthGame extends ApplicationAdapter
 
         GameManager.mainMenu = false;
         GameManager.createMaze();
+        GameManager.mazeGenerator.printMaze();
     }
 
     private void mainMenuInput()
@@ -127,6 +131,9 @@ public class LabyrinthGame extends ApplicationAdapter
             gameObject.update(deltaTime);
         }
 
+        CollisionsUtil.playerWallCollisions(GameManager.player);
+        CollisionsUtil.playerSpearCollision(GameManager.player);
+
 	    GameManager.checkEndPoint();
 	}
 
@@ -193,10 +200,6 @@ public class LabyrinthGame extends ApplicationAdapter
 		input(deltaTime);
 		update(deltaTime);
 		display();
-
-		System.out.print("\r                            \r");
-        System.out.print(GameManager.endPointLight.getPosition());
-        System.out.flush();
 	}
 
 	private void init()

@@ -1,9 +1,10 @@
 package com.ru.tgra;
 
-import com.ru.tgra.objects.Block;
-import com.ru.tgra.objects.EndPoint;
-import com.ru.tgra.objects.GameObject;
-import com.ru.tgra.objects.Player;
+import com.ru.tgra.models.CubeMask;
+import com.ru.tgra.models.Light;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Vector3D;
+import com.ru.tgra.objects.*;
 import com.ru.tgra.utilities.*;
 
 import java.util.ArrayList;
@@ -11,9 +12,11 @@ import java.util.ArrayList;
 public class GameManager
 {
     public static ArrayList<GameObject> gameObjects;
+    public static ArrayList<Spear> spears;
 
     public static MazeGenerator mazeGenerator;
     public static boolean[][] mazeWalls;
+    public static boolean[][] mazeSpears;
 
     public static boolean mainMenu;
 
@@ -28,6 +31,7 @@ public class GameManager
     public static void init()
     {
         gameObjects = new ArrayList<GameObject>();
+        spears = new ArrayList<Spear>();
         mazeGenerator = new MazeGenerator();
         currentLevel = 0;
     }
@@ -36,13 +40,15 @@ public class GameManager
     {
         currentLevel++;
 
+        spears.clear();
         gameObjects.clear();
 
         int sideLength = Settings.startSideLength + (Settings.sideLengthIncrement * (currentLevel - 1));
 
         generateMaze(sideLength);
         createFloor(new Point3D(sideLength / 2, -0.5f, sideLength / 2), sideLength);
-        createWalls(sideLength);
+        createWalls();
+        createSpears();
         createEndPoint();
         createPlayer();
         createMinimap();
@@ -60,7 +66,7 @@ public class GameManager
 
         if (playerX == endPointX && playerZ == endPointZ)
         {
-            //createMaze();
+            createMaze();
         }
     }
 
@@ -96,8 +102,8 @@ public class GameManager
 
     private static void createPlayer()
     {
-        player = new Player(new Point3D(mazeGenerator.getEnd()), new Vector3D(0.25f, 0.25f, 0.25f), Settings.playerSpeed, Settings.playerMinimapMaterial);
-        // player = new Player(mazeGenerator.getStart(), new Vector3D(0.25f, 0.25f, 0.25f), Settings.playerSpeed, playerMat);
+        //player = new Player(new Point3D(mazeGenerator.getEnd()), new Vector3D(0.25f, 0.25f, 0.25f), Settings.playerSpeed, Settings.playerMinimapMaterial);
+        player = new Player(new Point3D(mazeGenerator.getStart()), new Vector3D(0.25f, 0.25f, 0.25f), Settings.playerSpeed, Settings.playerMinimapMaterial);
         gameObjects.add(player);
     }
 
@@ -107,11 +113,43 @@ public class GameManager
 
         EndPoint endPoint = new EndPoint(endPointPos, new Vector3D(0.25f, 0.25f, 0.25f), Settings.endPointMaterial, Settings.endPointMinimapMaterial, new CubeMask());
         gameObjects.add(endPoint);
+
+        // DEBUG
+        int x = (int)endPointPos.x;
+        int y = (int)endPointPos.z;
+        Point3D p = new Point3D();
+        if (!mazeWalls[x+1][y])
+        {
+            p.x = x + 1;
+            p.z = y;
+        }
+        else if (!mazeWalls[x-1][y])
+        {
+            p.x = x - 1;
+            p.z = y;
+        }
+        else if (!mazeWalls[x][y+1])
+        {
+            p.x = x;
+            p.z = y + 1;
+        }
+        else if (!mazeWalls[x][y-1])
+        {
+            p.x = x;
+            p.z = y - 1;
+        }
+
+        p.y = Settings.spearUpY;
+
+        Spear spear = new Spear(p, new Vector3D(0.1f, 1f, 0.1f), Settings.wallMaterial, Settings.wallMinimapMaterial);
+        gameObjects.add(spear);
+        spears.add(spear);
     }
 
-    private static void createWalls(int sideLength)
+    private static void createWalls()
     {
         Vector3D scale = new Vector3D(1f, 2f, 1f);
+        int sideLength = mazeWalls.length;
 
         for (int i = 0; i < sideLength; i++)
         {
@@ -174,6 +212,27 @@ public class GameManager
         }
     }
 
+    private static void createSpears()
+    {
+        int sideLength = mazeSpears.length;
+        Vector3D scale = new Vector3D(0.1f, 1f, 0.1f);
+
+        for (int i = 0; i < sideLength; i++)
+        {
+            for (int j = 0; j < sideLength; j++)
+            {
+                if (mazeSpears[i][j])
+                {
+                    Point3D position = new Point3D(i, Settings.spearUpY, j);
+
+                    Spear spear = new Spear(position, scale, Settings.wallMaterial, Settings.wallMinimapMaterial);
+                    gameObjects.add(spear);
+                    spears.add(spear);
+                }
+            }
+        }
+    }
+
     private static void createFloor(Point3D pos, float sideLength)
     {
         Block floor = new Block(pos, new Vector3D(sideLength, 0.01f, sideLength), Settings.floorMaterial, Settings.floorMinimapMaterial, new CubeMask(false, false, false, false, true, false));
@@ -184,5 +243,6 @@ public class GameManager
     {
         mazeGenerator.generateMaze(sideLength);
         mazeWalls = mazeGenerator.getWalls();
+        mazeSpears = mazeGenerator.getSpears();
     }
 }

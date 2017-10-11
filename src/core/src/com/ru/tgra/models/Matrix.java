@@ -1,4 +1,4 @@
-package com.ru.tgra.utilities;
+package com.ru.tgra.models;
 
 import com.badlogic.gdx.utils.BufferUtils;
 

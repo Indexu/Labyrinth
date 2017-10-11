@@ -1,9 +1,8 @@
 package com.ru.tgra;
 
-import com.ru.tgra.utilities.Color;
-import com.ru.tgra.utilities.Material;
-import com.ru.tgra.utilities.Point3D;
-import com.ru.tgra.utilities.Vector3D;
+import com.ru.tgra.models.Color;
+import com.ru.tgra.models.Material;
+import com.ru.tgra.models.Vector3D;
 
 public class Settings
 {
@@ -15,6 +14,7 @@ public class Settings
     // Side length must be an odd number and increment must be an even number
     public static final int startSideLength = 15;
     public static final int sideLengthIncrement = 4;
+    public static final float percentageOfMazeSpears = 0.15f;
 
     /* === Player settings === */
     public static final float playerFOV = 60f;
@@ -24,6 +24,13 @@ public class Settings
     /* === End point settings === */
     public static final float bobbingSpeed = 4f;
     public static final float bobbingFactor = 0.4f;
+
+    /* === Spear settings === */
+    public static final float spearPauseTime = 1.5f;
+    public static final float spearRetractSpeed = 0.5f;
+    public static final float spearFallSpeed = 5f;
+    public static final float spearGroundY = 0.5f;
+    public static final float spearUpY = 2f;
 
     /* === Materials === */
     // Walls
@@ -105,7 +112,7 @@ public class Settings
 
     // Helmet light
     public static final Color helmetLightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final float helmetLightSpotFactor = 7.0f;
+    public static final float helmetLightSpotFactor = 7.0f; // 7
     public static final float helmetConstantAttenuation = 0.3f;
     public static final float helmetLightLinearAttenuation = 0.7f;
     public static final float helmetLightQuadraticAttenuation = 0.3f;

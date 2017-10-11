@@ -2,8 +2,8 @@ package com.ru.tgra.objects;
 
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
+import com.ru.tgra.models.*;
 import com.ru.tgra.shapes.BoxGraphic;
-import com.ru.tgra.utilities.*;
 
 public class Block extends GameObject
 {

@@ -3,7 +3,7 @@ package com.ru.tgra.objects;
 import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
-import com.ru.tgra.shapes.BoxGraphic;
+import com.ru.tgra.models.*;
 import com.ru.tgra.shapes.SphereGraphic;
 import com.ru.tgra.utilities.*;
 
@@ -42,14 +42,7 @@ public class EndPoint extends Block
 
         GraphicsEnvironment.shader.setLight(GameManager.endPointLight);
 
-        if (viewportID == Settings.viewportIDMinimap)
-        {
-            SphereGraphic.drawSolidSphere();
-        }
-        else
-        {
-            SphereGraphic.drawSolidSphere();
-        }
+        SphereGraphic.drawSolidSphere();
     }
 
     @Override

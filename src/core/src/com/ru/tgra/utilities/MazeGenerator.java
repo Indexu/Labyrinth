@@ -1,5 +1,9 @@
 package com.ru.tgra.utilities;
 
+import com.ru.tgra.Settings;
+import com.ru.tgra.models.Point3D;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 /******************************************************************************
@@ -23,6 +27,8 @@ public class MazeGenerator
     private int width;
     private int height;
     private Random rand;
+    private boolean[][] walls;
+    private boolean[][] spears;
 
     public MazeGenerator()
     { }
@@ -35,22 +41,18 @@ public class MazeGenerator
         init();
         generate();
         randomizeStartAndEnd();
+        setWalls();
+        randomizeSpears();
     }
 
     public boolean[][] getWalls()
     {
-        boolean[][] walls = new boolean[width][height];
-
-        //Outputs maze to terminal - nothing special
-        for (int i = 0; i < height; i++ )
-        {
-            for (int j = 0; j < width; j++ )
-            {
-                walls[i][j] = nodes[j + i * width].c == '#';
-            }
-        }
-
         return walls;
+    }
+
+    public boolean[][] getSpears()
+    {
+        return spears;
     }
 
     public Point3D getStart()
@@ -82,18 +84,7 @@ public class MazeGenerator
             {
                 Node node = nodes[j + i * width];
 
-                if (node.x == start.x && node.y == start.z)
-                {
-                    System.out.print("S ");
-                }
-                else if (node.x == end.x && node.y == end.z)
-                {
-                    System.out.print("E ");
-                }
-                else
-                {
-                    System.out.print(node.c + " ");
-                }
+                System.out.print(node.c + " ");
             }
             System.out.println();
         }
@@ -126,7 +117,10 @@ public class MazeGenerator
                     n.dirs = 15; //Assume that all directions can be explored (4 youngest bits set)
                     n.c = ' ';
                 }
-                else n.c = '#'; //Add walls between nodes
+                else
+                {
+                    n.c = '#'; //Add walls between nodes
+                }
             }
         }
     }
@@ -271,7 +265,59 @@ public class MazeGenerator
             }
         }
 
+        startNode.c = 'B';
+        endNode.c = 'E';
+
         start = new Point3D(startNode.x, 0, startNode.y);
         end = new Point3D(endNode.x, 0, endNode.y);
+    }
+
+    private void setWalls()
+    {
+        walls = new boolean[width][height];
+
+        for (int i = 0; i < height; i++ )
+        {
+            for (int j = 0; j < width; j++ )
+            {
+                walls[i][j] = nodes[j + i * width].c == '#';
+            }
+        }
+    }
+
+    private void randomizeSpears()
+    {
+        ArrayList<Node> freeNodes = new ArrayList<Node>();
+
+        for (int i = 0; i < nodes.length; i++)
+        {
+            if (nodes[i].c == ' ' && nodes[i].x != 0 && nodes[i].y != 0)
+            {
+                freeNodes.add(nodes[i]);
+            }
+        }
+
+        int numberOfSpears = (int) (freeNodes.size() * Settings.percentageOfMazeSpears);
+
+        System.out.format("Number of blocks: %d | Number of free blocks: %d | Number of spears: %d\n", (width * height), freeNodes.size(), numberOfSpears);
+
+        Node spearNode;
+
+        for (int i = 0; i < numberOfSpears; i++)
+        {
+            int index = rand.nextInt(freeNodes.size() - 1);
+            freeNodes.get(index).c = 'S';
+            freeNodes.remove(index);
+        }
+
+        spears = new boolean[width][height];
+
+        for (int i = 0; i < height; i++ )
+        {
+            for (int j = 0; j < width; j++ )
+            {
+                spears[i][j] = nodes[j + i * width].c == 'S';
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 package com.ru.tgra;
 
 import com.badlogic.gdx.utils.BufferUtils;
-import com.ru.tgra.utilities.Point3D;
-import com.ru.tgra.utilities.Vector3D;
+import com.ru.tgra.models.Point3D;
+import com.ru.tgra.models.Vector3D;
 
 import java.nio.FloatBuffer;
 
