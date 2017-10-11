@@ -27,10 +27,10 @@ public class MazeGenerator
     public MazeGenerator()
     { }
 
-    public void generateMaze(int width, int height)
+    public void generateMaze(int sideLength)
     {
-        this.width = width;
-        this.height = height;
+        this.width = sideLength;
+        this.height = sideLength;
 
         init();
         generate();

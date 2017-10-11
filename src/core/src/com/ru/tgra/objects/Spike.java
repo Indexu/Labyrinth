@@ -5,12 +5,9 @@ import com.ru.tgra.Settings;
 import com.ru.tgra.shapes.BoxGraphic;
 import com.ru.tgra.utilities.*;
 
-public class Block extends GameObject
+public class Spike extends GameObject
 {
-    protected CubeMask mask;
-    protected CubeMask minimapMask;
-
-    public Block(Point3D position, Vector3D scale, Material material, Material minimapMaterial, CubeMask mask)
+    public Spike(Point3D position, Vector3D scale, Material material, Material minimapMaterial)
     {
         super();
 
@@ -18,9 +15,6 @@ public class Block extends GameObject
         this.scale = scale;
         this.material = material;
         this.minimapMaterial = minimapMaterial;
-        this.mask = mask;
-
-        minimapMask = new CubeMask(false, false, false, false, true, false);
     }
 
     public void draw(int viewportID)
@@ -33,23 +27,16 @@ public class Block extends GameObject
 
         if (viewportID == Settings.viewportIDMinimap)
         {
-            BoxGraphic.drawSolidCube(minimapMask);
             GraphicsEnvironment.shader.setMaterial(minimapMaterial);
         }
         else
         {
             GraphicsEnvironment.shader.setMaterial(material);
-            BoxGraphic.drawSolidCube(mask);
         }
     }
 
     public void update(float deltaTime)
     {
         // Do nothing
-    }
-
-    public CubeMask getMask()
-    {
-        return mask;
     }
 }

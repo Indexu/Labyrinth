@@ -8,9 +8,10 @@ public abstract class GameObject
     protected Point3D position;
     protected Vector3D direction;
     protected float speed;
-    protected float rotation;
+    protected Vector3D rotation;
     protected Vector3D scale;
     protected Material material;
+    protected Material minimapMaterial;
     protected boolean destroyed;
 
     public GameObject()
@@ -18,13 +19,14 @@ public abstract class GameObject
         position = new Point3D();
         direction = new Vector3D();
         speed = 0;
-        rotation = 0;
+        rotation = new Vector3D();
         scale = new Vector3D();
         material = new Material();
+        minimapMaterial = new Material();
         destroyed = false;
     }
 
-    public GameObject(Point3D position, Vector3D direction, float speed, float rotation, Vector3D scale, Material material)
+    public GameObject(Point3D position, Vector3D direction, float speed, Vector3D rotation, Vector3D scale, Material material)
     {
         this.position = position;
         this.direction = direction;
@@ -80,12 +82,12 @@ public abstract class GameObject
         this.speed = speed;
     }
 
-    public float getRotation()
+    public Vector3D getRotation()
     {
         return rotation;
     }
 
-    public void setRotation(float rotation)
+    public void setRotation(Vector3D rotation)
     {
         this.rotation = rotation;
     }
@@ -108,5 +110,15 @@ public abstract class GameObject
     public void setMaterial(Material material)
     {
         this.material = material;
+    }
+
+    public Material getMinimapMaterial()
+    {
+        return minimapMaterial;
+    }
+
+    public void setMinimapMaterial(Material minimapMaterial)
+    {
+        this.minimapMaterial = minimapMaterial;
     }
 }

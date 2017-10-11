@@ -50,11 +50,18 @@ public class Light
         return position;
     }
 
-    public void setPosition(Point3D position)
+    public void setPosition(Point3D position, boolean copy)
     {
-        this.position.x = position.x;
-        this.position.y = position.y;
-        this.position.z = position.z;
+        if (copy)
+        {
+            this.position.x = position.x;
+            this.position.y = position.y;
+            this.position.z = position.z;
+        }
+        else
+        {
+            this.position = position;
+        }
     }
 
     public Color getColor()

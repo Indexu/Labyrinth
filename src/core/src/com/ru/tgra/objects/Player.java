@@ -58,6 +58,11 @@ public class Player extends GameObject
 
     public void draw(int viewportID)
     {
+        if (viewportID == Settings.viewportIDPerspective)
+        {
+            return;
+        }
+
         ModelMatrix.main.loadIdentityMatrix();
         ModelMatrix.main.addTranslation(position);
         ModelMatrix.main.addScale(scale);
@@ -103,15 +108,25 @@ public class Player extends GameObject
         return camera;
     }
 
+    public int getMazeX()
+    {
+        return (int) (position.x + 0.5f);
+    }
+
+    public int getMazeY()
+    {
+        return (int) (position.z + 0.5f);
+    }
+
     private void wallCollision()
     {
-        int x = (int) (position.x + 0.5f);
-        int y = (int) (position.z + 0.5f);
+        int x = getMazeX();
+        int y = getMazeY();
 
         float unitX = (position.x - ((float)(int)position.x) + 0.5f) % 1f;
         float unitZ = (position.z - ((float)(int)position.z) + 0.5f) % 1f;
 
-        if (0 <= x && x < GameManager.mazeWalls.length && 0 <= y && y < GameManager.mazeWalls[0].length)
+        if (0 <= x && x < GameManager.mazeWalls.length-1 && 0 <= y && y < GameManager.mazeWalls[0].length-1)
         {
             float left = unitX + radius;
             float right = unitX - radius;
