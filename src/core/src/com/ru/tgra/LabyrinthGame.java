@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
+import com.ru.tgra.models.Color;
 import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
@@ -18,18 +19,21 @@ public class LabyrinthGame extends ApplicationAdapter
 {
 	private Shader shader;
 
+	private Point3D mainMenuTitlePosition;
+    private Point3D mainMenuMovePosition;
+    private Point3D mainMenuMousePosition;
+    private Point3D mainMenuOrbPosition;
+    private Point3D mainMenuPlayPosition;
+    private Point3D mainMenuMessagePosition;
 	private float oldMouseX;
-	private float oldMouseY;
+	private float textTimer;
 
 	@Override
 	public void create ()
 	{
 		init();
 
-        GameManager.mainMenu = false;
-        GameManager.createMaze();
-        AudioManager.playHeartbeat();
-        AudioManager.playHorrorAmbience();
+        GameManager.mainMenu = true;
     }
 
     private void mainMenuInput()
@@ -38,25 +42,31 @@ public class LabyrinthGame extends ApplicationAdapter
         {
             GameManager.mainMenu = false;
             GameManager.createMaze();
+            AudioManager.playHeartbeat();
+            AudioManager.playHorrorAmbience();
         }
     }
 
-	private void input(float deltaTime)
+	private void input()
 	{
 		float mouseX = Gdx.input.getX();
-		float mouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+        if (GameManager.mainMenu)
+        {
+            mainMenuInput();
+
+            return;
+        }
+
+        if (GameManager.isDead() || GameManager.hasWon())
+        {
+            return;
+        }
 
 		if (mouseX != oldMouseX)
 		{
 		    GameManager.player.mouseLook(oldMouseX - mouseX);
-			//GameManager.player.getCamera().yaw((mouseX - oldMouseX) * deltaTime * -30);
 			oldMouseX = mouseX;
-		}
-
-		if (mouseY != oldMouseY)
-		{
-			//GameManager.player.getCamera().pitch((mouseY - oldMouseY) * deltaTime * 30);
-			oldMouseY = mouseY;
 		}
 
 		if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
@@ -88,41 +98,12 @@ public class LabyrinthGame extends ApplicationAdapter
 		{
             GameManager.player.moveBack();
 		}
-
-		// Debug
-//        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-//        {
-//            GameManager.player.getCamera().pitch(Settings.playerButtonLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-//        {
-//            GameManager.player.getCamera().pitch(-Settings.playerButtonLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.E))
-//        {
-//            GameManager.player.getCamera().roll(Settings.playerButtonLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.Q))
-//        {
-//            GameManager.player.getCamera().roll(-Settings.playerButtonLookSensitivity * deltaTime);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
-//        {
-//            GameManager.player.getCamera().slide(0f, Settings.playerSpeed * deltaTime, 0f);
-//        }
-//
-//        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-//        {
-//            GameManager.player.getCamera().slide(0f, -Settings.playerSpeed * deltaTime, 0f);
-//        }
 	}
 
-	private void update(float deltaTime)
+	private void update()
 	{
+        float deltaTime = Gdx.graphics.getDeltaTime();
+
 	    if (GameManager.mainMenu)
         {
             return;
@@ -133,11 +114,35 @@ public class LabyrinthGame extends ApplicationAdapter
             gameObject.update(deltaTime);
         }
 
-        CollisionsUtil.playerWallCollisions(GameManager.player);
-        CollisionsUtil.playerSpearCollision(GameManager.player);
+        if (GameManager.isDead())
+        {
+            textTimer += deltaTime;
 
-        GameManager.setHeartbeat();
-	    GameManager.checkEndPoint();
+            if (Settings.fadeTime < textTimer)
+            {
+                textTimer = 0f;
+                GameManager.revive();
+            }
+        }
+        else if (GameManager.hasWon())
+        {
+            textTimer += deltaTime;
+
+            if (Settings.fadeTime < textTimer)
+            {
+                textTimer = 0f;
+                GameManager.createMaze();
+                GraphicsEnvironment.shader.setBrightness(1.0f);
+            }
+        }
+        else
+        {
+            CollisionsUtil.playerWallCollisions(GameManager.player);
+            CollisionsUtil.playerSpearCollision(GameManager.player);
+
+            GameManager.setHeartbeat();
+            GameManager.checkEndPoint();
+        }
 	}
 
 	private void display()
@@ -148,9 +153,23 @@ public class LabyrinthGame extends ApplicationAdapter
 
         if (GameManager.mainMenu)
         {
-            mainMenuInput();
+            drawMainMenu();
 
             return;
+        }
+
+        if (GameManager.isDead())
+        {
+            float ratio = 1.0f - (textTimer / Settings.fadeTime);
+
+            shader.setBrightness(ratio);
+        }
+
+        if (GameManager.hasWon())
+        {
+            float ratio = textTimer / Settings.fadeTime;
+
+            shader.setBrightness(ratio * 50.0f);
         }
 
 		for (int viewNum = 0; viewNum < 2; viewNum++)
@@ -195,13 +214,21 @@ public class LabyrinthGame extends ApplicationAdapter
 
 	}
 
+    private void drawMainMenu()
+    {
+        GraphicsEnvironment.drawText(mainMenuTitlePosition, "Labyrinth", new Color(0.8f, 0.0f, 0.0f, 1.0f), 3);
+        GraphicsEnvironment.drawText(mainMenuMovePosition, "Use WASD to move", new Color(1.0f, 1.0f, 1.0f, 1.0f), 2);
+        GraphicsEnvironment.drawText(mainMenuMousePosition, "Mouse or arrow keys to look around", new Color(1.0f, 1.0f, 1.0f, 1.0f), 2);
+        GraphicsEnvironment.drawText(mainMenuOrbPosition, "Find the red orb", new Color(1.0f, 1.0f, 1.0f, 1.0f), 2);
+        GraphicsEnvironment.drawText(mainMenuPlayPosition, "Press ENTER to play", new Color(1.0f, 1.0f, 1.0f, 1.0f), 2);
+        GraphicsEnvironment.drawText(mainMenuMessagePosition, "Good luck and beware the above...", new Color(1.0f, 1.0f, 1.0f, 1.0f), 2);
+    }
+
 	@Override
 	public void render ()
 	{
-		float deltaTime = Gdx.graphics.getDeltaTime();
-
-		input(deltaTime);
-		update(deltaTime);
+		input();
+		update();
 		display();
 	}
 
@@ -226,6 +253,26 @@ public class LabyrinthGame extends ApplicationAdapter
         Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		oldMouseX = Gdx.input.getX();
-		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();
+        textTimer = 0f;
+
+        float offset = Gdx.graphics.getHeight() / 8;
+
+        mainMenuTitlePosition = new Point3D(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0f);
+        mainMenuTitlePosition.y += offset * 2.5f;
+
+        mainMenuMovePosition = new Point3D(mainMenuTitlePosition);
+        mainMenuMovePosition.y -= offset;
+
+        mainMenuMousePosition = new Point3D(mainMenuMovePosition);
+        mainMenuMousePosition.y -= offset;
+
+        mainMenuOrbPosition = new Point3D(mainMenuMousePosition);
+        mainMenuOrbPosition.y -= offset;
+
+        mainMenuPlayPosition = new Point3D(mainMenuOrbPosition);
+        mainMenuPlayPosition.y -= offset;
+
+        mainMenuMessagePosition = new Point3D(mainMenuPlayPosition);
+        mainMenuMessagePosition.y -= offset;
 	}
 }

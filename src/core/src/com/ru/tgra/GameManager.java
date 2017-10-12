@@ -24,6 +24,8 @@ public class GameManager
     public static Light endPointLight;
     public static Camera minimapCamera;
     public static Player player;
+    public static boolean dead;
+    public static boolean won;
 
     private static Point3D endPointPos;
     private static int currentLevel;
@@ -38,10 +40,13 @@ public class GameManager
         currentLevel = 0;
         distanceToEnd = 0f;
         maxDistanceToEnd = 0f;
+        dead = false;
     }
 
     public static void createMaze()
     {
+        AudioManager.stopPortal();
+        won = false;
         currentLevel++;
 
         spears.clear();
@@ -72,7 +77,8 @@ public class GameManager
 
         if (playerX == endPointX && playerZ == endPointZ)
         {
-            createMaze();
+            AudioManager.playPortal();
+            won = true;
         }
     }
 
@@ -85,6 +91,31 @@ public class GameManager
 
         AudioManager.setHeartbeatVolume(ratio);
         AudioManager.setHeartbeatSpeed(speed);
+    }
+
+    public static boolean isDead()
+    {
+        return dead;
+    }
+
+    public static boolean hasWon()
+    {
+        return won;
+    }
+
+    public static void revive()
+    {
+        player.getPosition().set(GameManager.mazeGenerator.getStart());
+        AudioManager.playHeartbeat();
+        GraphicsEnvironment.shader.setBrightness(1.0f);
+        dead = false;
+    }
+
+    public static void death()
+    {
+        AudioManager.stopHeartbeat();
+        AudioManager.playDeath();
+        dead = true;
     }
 
     private static void createEndPointLight()
@@ -130,33 +161,6 @@ public class GameManager
 
         EndPoint endPoint = new EndPoint(endPointPos, new Vector3D(0.25f, 0.25f, 0.25f), Settings.endPointMaterial, Settings.endPointMinimapMaterial, new CubeMask());
         gameObjects.add(endPoint);
-
-        // DEBUG
-        int x = (int)endPointPos.x;
-        int y = (int)endPointPos.z;
-        Point3D p = new Point3D();
-        if (!mazeWalls[x+1][y])
-        {
-            p.x = x + 1;
-            p.z = y;
-        }
-        else if (!mazeWalls[x-1][y])
-        {
-            p.x = x - 1;
-            p.z = y;
-        }
-        else if (!mazeWalls[x][y+1])
-        {
-            p.x = x;
-            p.z = y + 1;
-        }
-        else if (!mazeWalls[x][y-1])
-        {
-            p.x = x;
-            p.z = y - 1;
-        }
-
-        p.y = Settings.spearUpY;
     }
 
     private static void createWalls()
@@ -263,12 +267,12 @@ public class GameManager
         positions[1] = new Point3D(0f, towerPosY, max);
         positions[2] = new Point3D(max, towerPosY, 0f);
         positions[3] = new Point3D(max, towerPosY, max);
-//
-//        Vector3D[] directions = new Vector3D[4];
-//        directions[0] = new Vector3D(1f, -0.5f, 1f);
-//        directions[1] = new Vector3D(1f, -0.5f, -1f);
-//        directions[2] = new Vector3D(-1f, -0.5f, 1f);
-//        directions[3] = new Vector3D(-1f, -0.5f, -1f);
+
+        CubeMask[] masks = new CubeMask[4];
+        masks[0] = new CubeMask(true, false, true, false, false, false);
+        masks[1] = new CubeMask(true, false, false, true, false, false);
+        masks[2] = new CubeMask(false, true, true, false, false, false);
+        masks[3] = new CubeMask(false, true, false, true, false, false);
 
         for (int i = 0; i < 4; i++)
         {
@@ -295,7 +299,7 @@ public class GameManager
                 Settings.watchtowerMinimapMaterial,
                 Settings.watchtowerOrbMaterial,
                 Settings.watchtowerOrbMinimapMaterial,
-                new CubeMask(),
+                masks[i],
                 spotLight
             );
 

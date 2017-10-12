@@ -113,8 +113,8 @@ public class CollisionsUtil
             {
                 if (spear.isFalling())
                 {
-                    playerPosition.set(GameManager.mazeGenerator.getStart());
-                    AudioManager.playDeath();
+                    GameManager.death();
+                    break;
                 }
                 else
                 {

@@ -47,9 +47,4 @@ public class Block extends GameObject
     {
         // Do nothing
     }
-
-    public CubeMask getMask()
-    {
-        return mask;
-    }
 }

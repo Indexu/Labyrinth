@@ -28,6 +28,8 @@ uniform vec4 u_materialAmbience;
 uniform vec4 u_materialEmission;
 uniform float u_materialTransparency;
 
+uniform float u_brightness;
+
 varying vec4 v_n;
 varying vec4 v_s[numberOfLights];
 varying vec4 v_h[numberOfLights];
@@ -80,5 +82,5 @@ void main()
     color += u_materialEmission;
     color.a = u_materialTransparency;
 
-	gl_FragColor = color;
+	gl_FragColor = color * u_brightness;
 }

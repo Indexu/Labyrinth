@@ -18,9 +18,10 @@ public class Settings
 
     /* === Player settings === */
     public static final float playerFOV = 60f;
-    public static final float playerSpeed = 5f;
+    public static final float playerSpeed = 2f;
     public static final float playerButtonLookSensitivity = 100f;
     public static final float playerMouseLookSensitivity = 30f;
+    public static final float fadeTime = 3f;
 
     /* === End point settings === */
     public static final float bobbingSpeed = 4f;
@@ -37,7 +38,6 @@ public class Settings
     /* === Watchtower settings === */
     public static final Vector3D watchtowerScale = new Vector3D(1f, 4f, 1f);
     public static final Vector3D watchtowerOrbScale = new Vector3D(0.5f, 0.5f, 0.5f);
-
 
     /* === Materials === */
     // Walls
@@ -137,10 +137,10 @@ public class Settings
     // Watchtower orb material
     public static final Material watchtowerOrbMaterial = new Material
     (
-            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
-            new Color(1.0f, 1.0f, 1.0f, 1.0f), // Diffuse
-            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
-            new Color(1.0f, 1.0f, 1.0f, 1.0f), // Emission
+            new Color(0.6f, 0.0f, 0.0f, 1.0f), // Ambience
+            new Color(1.0f, 0.0f, 0.0f, 1.0f), // Diffuse
+            new Color(1.0f, 0.0f, 0.0f, 1.0f), // Specular
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Emission
             128f,
             1f
     );
@@ -172,7 +172,7 @@ public class Settings
 
     // Helmet light
     public static final Color helmetLightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final float helmetLightSpotFactor = 10.0f; // 7
+    public static final float helmetLightSpotFactor = 10.0f;
     public static final float helmetConstantAttenuation = 0.5f;
     public static final float helmetLightLinearAttenuation = 0.3f;
     public static final float helmetLightQuadraticAttenuation = 0.3f;

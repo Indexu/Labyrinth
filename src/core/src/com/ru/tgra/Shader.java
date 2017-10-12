@@ -29,6 +29,7 @@ public class Shader
     private int materialAmbienceLoc;
     private int materialEmissionLoc;
     private int materialTransparencyLoc;
+    private int brightnessLoc;
 
     private int modelMatrixLoc;
     private int viewMatrixLoc;
@@ -41,6 +42,13 @@ public class Shader
         initLocs();
 
         Gdx.gl.glUseProgram(renderingProgramID);
+    }
+
+    public void setShader()
+    {
+        Gdx.gl.glUseProgram(renderingProgramID);
+        Gdx.gl.glEnableVertexAttribArray(positionLoc);
+        Gdx.gl.glEnableVertexAttribArray(normalLoc);
     }
 
     public void setMaterial(Material material)
@@ -94,6 +102,10 @@ public class Shader
         Gdx.gl.glUniform1f(shininessFactorLoc, f);
     }
 
+    public void setBrightness(float f)
+    {
+        Gdx.gl.glUniform1f(brightnessLoc, f);
+    }
 
     public void setLightPosition(int lightID, Point3D position)
     {
@@ -206,6 +218,8 @@ public class Shader
         projectionMatrixLoc	= Gdx.gl.glGetUniformLocation(renderingProgramID, "u_projectionMatrix");
 
         eyePosLoc = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_eyePosition");
+
+        brightnessLoc = Gdx.gl.glGetUniformLocation(renderingProgramID, "u_brightness");
 
         lightPosLoc = new int[Settings.numberOfLights];
         lightColorLoc = new int[Settings.numberOfLights];
