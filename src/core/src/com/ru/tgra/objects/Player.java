@@ -9,7 +9,6 @@ import com.ru.tgra.models.Material;
 import com.ru.tgra.models.ModelMatrix;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
-import com.ru.tgra.utilities.CollisionsUtil;
 
 public class Player extends GameObject
 {
@@ -68,7 +67,9 @@ public class Player extends GameObject
         GraphicsEnvironment.shader.setModelMatrix(ModelMatrix.main.getMatrix());
         GraphicsEnvironment.shader.setMaterial(material);
 
-        SphereGraphic.drawSolidSphere();
+        GraphicsEnvironment.shader.setLight(GameManager.headLight);
+
+        SphereGraphic.drawSolidPolySphere();
     }
 
     public void moveLeft()

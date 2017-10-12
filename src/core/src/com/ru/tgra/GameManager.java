@@ -48,6 +48,7 @@ public class GameManager
         generateMaze(sideLength);
         createFloor(new Point3D(sideLength / 2, -0.5f, sideLength / 2), sideLength);
         createWalls();
+        createWatchtowers();
         createSpears();
         createEndPoint();
         createPlayer();
@@ -73,7 +74,7 @@ public class GameManager
     private static void createEndPointLight()
     {
         endPointLight = new Light();
-        endPointLight.setID(1);
+        endPointLight.setID(5);
         endPointLight.setColor(Settings.endPointLightColor);
         endPointLight.setPosition(endPointPos, false);
         endPointLight.setDirection(Settings.endPointLightDirection);
@@ -86,7 +87,7 @@ public class GameManager
     private static void createHeadLight()
     {
         headLight = new Light();
-        headLight.setID(0);
+        headLight.setID(4);
         headLight.setColor(Settings.helmetLightColor);
         headLight.setSpotFactor(Settings.helmetLightSpotFactor);
         headLight.setConstantAttenuation(Settings.helmetConstantAttenuation);
@@ -155,6 +156,13 @@ public class GameManager
         {
             for (int j = 0; j < sideLength; j++)
             {
+                // Skip corners
+                if ((i == 0 && j == 0) || (i == 0 && j == sideLength-1) ||
+                    (i == sideLength-1 && j == 0) || (i == sideLength-1 && j == sideLength-1))
+                {
+                    continue;
+                }
+
                 if (mazeWalls[i][j])
                 {
                     Point3D position = new Point3D(i, 0.5f, j);
@@ -230,6 +238,57 @@ public class GameManager
                     spears.add(spear);
                 }
             }
+        }
+    }
+
+    private static void createWatchtowers()
+    {
+        int max = mazeWalls.length-1;
+        float towerPosY = 1.5f;
+
+        Point3D[] positions = new Point3D[4];
+        positions[0] = new Point3D(0f, towerPosY, 0f);
+        positions[1] = new Point3D(0f, towerPosY, max);
+        positions[2] = new Point3D(max, towerPosY, 0f);
+        positions[3] = new Point3D(max, towerPosY, max);
+
+        Vector3D[] directions = new Vector3D[4];
+        directions[0] = new Vector3D(1f, -0.5f, 1f);
+        directions[1] = new Vector3D(1f, -0.5f, -1f);
+        directions[2] = new Vector3D(-1f, -0.5f, 1f);
+        directions[3] = new Vector3D(-1f, -0.5f, -1f);
+
+        for (int i = 0; i < 4; i++)
+        {
+            Point3D orbPos = new Point3D(positions[i]);
+            orbPos.y = Settings.watchtowerScale.y;
+
+            Light spotLight = new Light();
+            spotLight.setID(i);
+            spotLight.setPosition(orbPos, true);
+            spotLight.setDirection(directions[i]);
+            spotLight.setColor(Settings.watchtowerLightColor);
+            spotLight.setSpotFactor(Settings.watchtowerLightSpotFactor);
+            spotLight.setConstantAttenuation(Settings.watchtowerLightConstantAttenuation);
+            spotLight.setLinearAttenuation(Settings.watchtowerLightLinearAttenuation);
+            spotLight.setQuadraticAttenuation(Settings.watchtowerLightQuadraticAttenuation);
+
+            spotLight.getPosition().y += 0.1f;
+
+            Watchtower watchtower = new Watchtower
+            (
+                positions[i],
+                Settings.watchtowerScale,
+                Settings.watchtowerOrbScale,
+                Settings.watchtowerMaterial,
+                Settings.watchtowerMinimapMaterial,
+                Settings.watchtowerOrbMaterial,
+                Settings.watchtowerOrbMinimapMaterial,
+                new CubeMask(),
+                spotLight
+            );
+
+            gameObjects.add(watchtower);
         }
     }
 

@@ -33,8 +33,8 @@ public class Block extends GameObject
 
         if (viewportID == Settings.viewportIDMinimap)
         {
-            BoxGraphic.drawSolidCube(minimapMask);
             GraphicsEnvironment.shader.setMaterial(minimapMaterial);
+            BoxGraphic.drawSolidCube(minimapMask);
         }
         else
         {

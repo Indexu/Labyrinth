@@ -131,8 +131,8 @@ public class LabyrinthGame extends ApplicationAdapter
             gameObject.update(deltaTime);
         }
 
-        CollisionsUtil.playerWallCollisions(GameManager.player);
-        CollisionsUtil.playerSpearCollision(GameManager.player);
+        //CollisionsUtil.playerWallCollisions(GameManager.player);
+        //CollisionsUtil.playerSpearCollision(GameManager.player);
 
 	    GameManager.checkEndPoint();
 	}
@@ -181,8 +181,6 @@ public class LabyrinthGame extends ApplicationAdapter
                 GameManager.headLight.getPosition().y = 3f;
                 GameManager.headLight.getDirection().add(new Vector3D(0f, -1f, 0f));
             }
-
-            shader.setLight(GameManager.headLight);
 
 			for (GameObject gameObject : GameManager.gameObjects)
             {

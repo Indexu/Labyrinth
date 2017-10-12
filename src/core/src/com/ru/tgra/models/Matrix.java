@@ -164,4 +164,33 @@ public class Matrix {
 	{
 		return matrix;
 	}
+
+	@Override
+	public String toString()
+	{
+		String s = "";
+
+		for (int i = 0; i < 4; i++)
+        {
+            s += "|";
+
+            for (int j = 0; j < 4; j++)
+            {
+                float num = matrix.get(j + (i * 4));
+                String strNum = String.format("%.2f", num);
+                s += strNum + "|";
+            }
+
+            s += "\n";
+
+            for (int j = 0; j < 4; j++)
+            {
+                s += "-----";
+            }
+
+            s += "\n";
+        }
+
+        return s;
+	}
 }

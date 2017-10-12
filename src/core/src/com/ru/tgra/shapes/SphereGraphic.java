@@ -17,20 +17,12 @@ public class SphereGraphic
         public int vertexCount;
     }
 
+    private static SphereInfo polySphere;
     private static SphereInfo sphere;
     private static SphereInfo spear;
 
     private static int vertexPointer;
     private static int normalPointer;
-    private static int verticesPerCircle = 50;
-
-
-    private static int sphereStacks = 6;
-    private static int sphereSlices = 12;
-    private static int spearStacks = 3;
-    private static int spearSlices = 6;
-    private static int sphereVertexCount;
-    private static int spearVertexCount;
 
     public static void create(int vertexPointer, int normalPointer) {
         SphereGraphic.vertexPointer = vertexPointer;
@@ -39,9 +31,14 @@ public class SphereGraphic
         //float[] array = new float[2*verticesPerCircle];
 
         sphere = new SphereInfo();
-        sphere.stacks = 6;
-        sphere.slices = 12;
+        sphere.stacks = 12;
+        sphere.slices = 24;
         create(sphere);
+
+        polySphere = new SphereInfo();
+        polySphere.stacks = 6;
+        polySphere.slices = 12;
+        create(polySphere);
 
         spear = new SphereInfo();
         spear.stacks = 3;
@@ -68,6 +65,28 @@ public class SphereGraphic
         for(int i = 0; i < sphere.vertexCount; i += (sphere.slices+1)*2)
         {
             Gdx.gl.glDrawArrays(GL20.GL_LINE_STRIP, i, (sphere.slices+1)*2);
+        }
+    }
+
+    public static void drawSolidPolySphere() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, polySphere.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, polySphere.normalBuffer);
+
+        for(int i = 0; i < polySphere.vertexCount; i += (polySphere.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_TRIANGLE_STRIP, i, (polySphere.slices+1)*2);
+        }
+    }
+
+    public static void drawOutlinePolySphere() {
+
+        Gdx.gl.glVertexAttribPointer(vertexPointer, 3, GL20.GL_FLOAT, false, 0, polySphere.vertexBuffer);
+        Gdx.gl.glVertexAttribPointer(normalPointer, 3, GL20.GL_FLOAT, false, 0, polySphere.normalBuffer);
+
+        for(int i = 0; i < polySphere.vertexCount; i += (polySphere.slices+1)*2)
+        {
+            Gdx.gl.glDrawArrays(GL20.GL_LINE_STRIP, i, (polySphere.slices+1)*2);
         }
     }
 

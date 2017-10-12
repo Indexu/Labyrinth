@@ -301,8 +301,6 @@ public class MazeGenerator
 
         System.out.format("Number of blocks: %d | Number of free blocks: %d | Number of spears: %d\n", (width * height), freeNodes.size(), numberOfSpears);
 
-        Node spearNode;
-
         for (int i = 0; i < numberOfSpears; i++)
         {
             int index = rand.nextInt(freeNodes.size() - 1);

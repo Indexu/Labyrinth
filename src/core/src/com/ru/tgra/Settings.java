@@ -32,6 +32,11 @@ public class Settings
     public static final float spearGroundY = 0.5f;
     public static final float spearUpY = 2f;
 
+    /* === Watchtower settings === */
+    public static final Vector3D watchtowerScale = new Vector3D(1f, 4f, 1f);
+    public static final Vector3D watchtowerOrbScale = new Vector3D(0.5f, 0.5f, 0.5f);
+
+
     /* === Materials === */
     // Walls
     public static final Material wallMaterial = new Material
@@ -95,6 +100,48 @@ public class Settings
             1f
     );
 
+    // Watchtower material
+    public static final Material watchtowerMaterial = new Material
+    (
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
+            new Color(0.4f, 0.4f, 0.4f, 1.0f), // Diffuse
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Emission
+            128f,
+            1f
+    );
+
+    public static final Material watchtowerMinimapMaterial = new Material
+    (
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
+            new Color(0.4f, 0.4f, 0.4f, 1.0f), // Diffuse
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Emission
+            128f,
+            1f
+    );
+
+    // Watchtower orb material
+    public static final Material watchtowerOrbMaterial = new Material
+    (
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
+            new Color(1.0f, 1.0f, 1.0f, 1.0f), // Diffuse
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
+            new Color(1.0f, 1.0f, 1.0f, 1.0f), // Emission
+            128f,
+            1f
+    );
+
+    public static final Material watchtowerOrbMinimapMaterial = new Material
+    (
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
+            new Color(1.0f, 1.0f, 1.0f, 1.0f), // Diffuse
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Emission
+            128f,
+            1f
+    );
+
     // Player
     public static final Material playerMinimapMaterial = new Material
     (
@@ -107,7 +154,7 @@ public class Settings
     );
 
     /* === Lights === */
-    public static final int numberOfLights = 2; // !!!MUST MATCH IN THE SHADER!!!
+    public static final int numberOfLights = 6; // !!!MUST MATCH IN THE SHADER!!!
     public static final Color globalAmbience = new Color(0.5f, 0.0f, 0.0f, 1.0f);
 
     // Helmet light
@@ -118,10 +165,17 @@ public class Settings
     public static final float helmetLightQuadraticAttenuation = 0.3f;
 
     // End point light
-    public static final Color endPointLightColor = new Color(1.0f, 0.0f, 0.0f, 0.0f);
+    public static final Color endPointLightColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
     public static final Vector3D endPointLightDirection = new Vector3D(0, -1, 0);
     public static final float endPointLightSpotFactor = 5.0f;
     public static final float endPointConstantAttenuation = 0.0f;
     public static final float endPointLightLinearAttenuation = 0f;
     public static final float endPointLightQuadraticAttenuation = 2f;
+
+    // End point light
+    public static final Color watchtowerLightColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
+    public static final float watchtowerLightSpotFactor = 15.0f;
+    public static final float watchtowerLightConstantAttenuation = 0.0f;
+    public static final float watchtowerLightLinearAttenuation = 0.0f;
+    public static final float watchtowerLightQuadraticAttenuation = 0.04f;
 }

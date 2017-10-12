@@ -42,7 +42,7 @@ public class EndPoint extends Block
 
         GraphicsEnvironment.shader.setLight(GameManager.endPointLight);
 
-        SphereGraphic.drawSolidSphere();
+        SphereGraphic.drawSolidPolySphere();
     }
 
     @Override

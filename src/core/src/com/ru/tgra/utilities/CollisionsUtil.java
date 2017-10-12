@@ -58,29 +58,30 @@ public class CollisionsUtil
             // Check diagonal
             if (!collided)
             {
+                int sideLength = GameManager.mazeWalls.length-1;
                 // Top left
-                if (GameManager.mazeWalls[x+1][y+1])
+                if (x != sideLength && y != sideLength &&  GameManager.mazeWalls[x+1][y+1])
                 {
                     Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y + 0.5f));
                     cornerCollision(position, v, radius);
                 }
 
                 // Top right
-                if (GameManager.mazeWalls[x-1][y+1])
+                if (x != 0 && y != sideLength && GameManager.mazeWalls[x-1][y+1])
                 {
                     Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y + 0.5f));
                     cornerCollision(position, v, radius);
                 }
 
                 // Bottom left
-                if (GameManager.mazeWalls[x+1][y-1])
+                if (x != sideLength && y != 0 && GameManager.mazeWalls[x+1][y-1])
                 {
                     Vector3D v = new Vector3D(position.x - (x + 0.5f), 0f, position.z - (y - 0.5f));
                     cornerCollision(position, v, radius);
                 }
 
                 // Bottom right
-                if (GameManager.mazeWalls[x-1][y+1])
+                if (x != 0 && y != 0 && GameManager.mazeWalls[x-1][y-1])
                 {
                     Vector3D v = new Vector3D(position.x - (x - 0.5f), 0f, position.z - (y - 0.5f));
                     cornerCollision(position, v, radius);
