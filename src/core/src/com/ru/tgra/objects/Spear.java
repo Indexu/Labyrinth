@@ -1,5 +1,7 @@
 package com.ru.tgra.objects;
 
+import com.ru.tgra.AudioManager;
+import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
 import com.ru.tgra.models.Material;
@@ -22,14 +24,13 @@ public class Spear extends GameObject
     private boolean active;
     private float activateTime;
 
-    public Spear(Point3D position, Vector3D scale, Material material, Material minimapMaterial)
+    public Spear(Point3D position, Vector3D scale, Material material)
     {
         super();
 
         this.position = position;
         this.scale = scale;
         this.material = material;
-        this.minimapMaterial = minimapMaterial;
 
         boxScale = new Vector3D(scale);
         boxScale.x *= 2f;
@@ -51,11 +52,7 @@ public class Spear extends GameObject
     {
         if (viewportID == Settings.viewportIDMinimap)
         {
-            GraphicsEnvironment.shader.setMaterial(minimapMaterial);
-        }
-        else
-        {
-            GraphicsEnvironment.shader.setMaterial(material);
+            return;
         }
 
         ModelMatrix.main.loadIdentityMatrix();
@@ -64,6 +61,7 @@ public class Spear extends GameObject
         ModelMatrix.main.addScale(scale);
 
         GraphicsEnvironment.shader.setModelMatrix(ModelMatrix.main.getMatrix());
+        GraphicsEnvironment.shader.setMaterial(material);
 
         SphereGraphic.drawSolidSpear();
 
@@ -120,6 +118,7 @@ public class Spear extends GameObject
                 isDown = true;
                 paused = true;
                 position.y = Settings.spearGroundY;
+                playSound();
             }
         }
         // Retracting
@@ -134,6 +133,20 @@ public class Spear extends GameObject
                 retracting = false;
                 position.y = Settings.spearUpY;
             }
+        }
+    }
+
+    public void playSound()
+    {
+        float distanceToPlayer = Vector3D.difference(position, GameManager.player.getPosition()).length();
+
+        float volume = distanceToPlayer / Settings.spearVolumeRadius;
+
+        if (volume <= 1.0f)
+        {
+            volume = 1.0f - volume;
+
+            AudioManager.playSpear(volume);
         }
     }
 

@@ -27,6 +27,8 @@ public class GameManager
 
     private static Point3D endPointPos;
     private static int currentLevel;
+    private static float distanceToEnd;
+    private static float maxDistanceToEnd;
 
     public static void init()
     {
@@ -34,6 +36,8 @@ public class GameManager
         spears = new ArrayList<Spear>();
         mazeGenerator = new MazeGenerator();
         currentLevel = 0;
+        distanceToEnd = 0f;
+        maxDistanceToEnd = 0f;
     }
 
     public static void createMaze()
@@ -44,6 +48,7 @@ public class GameManager
         gameObjects.clear();
 
         int sideLength = Settings.startSideLength + (Settings.sideLengthIncrement * (currentLevel - 1));
+        maxDistanceToEnd = (float) Math.sqrt(sideLength * sideLength * 2);
 
         generateMaze(sideLength);
         createFloor(new Point3D(sideLength / 2, -0.5f, sideLength / 2), sideLength);
@@ -69,6 +74,17 @@ public class GameManager
         {
             createMaze();
         }
+    }
+
+    public static void setHeartbeat()
+    {
+        distanceToEnd = Vector3D.difference(endPointPos, player.getPosition()).length();
+
+        float ratio = 1 - (distanceToEnd / maxDistanceToEnd);
+        float speed = ratio * 5f;
+
+        AudioManager.setHeartbeatVolume(ratio);
+        AudioManager.setHeartbeatSpeed(speed);
     }
 
     private static void createEndPointLight()
@@ -141,10 +157,6 @@ public class GameManager
         }
 
         p.y = Settings.spearUpY;
-
-        Spear spear = new Spear(p, new Vector3D(0.1f, 1f, 0.1f), Settings.wallMaterial, Settings.wallMinimapMaterial);
-        gameObjects.add(spear);
-        spears.add(spear);
     }
 
     private static void createWalls()
@@ -233,7 +245,7 @@ public class GameManager
                 {
                     Point3D position = new Point3D(i, Settings.spearUpY, j);
 
-                    Spear spear = new Spear(position, scale, Settings.wallMaterial, Settings.wallMinimapMaterial);
+                    Spear spear = new Spear(position, scale, Settings.spearMaterial);
                     gameObjects.add(spear);
                     spears.add(spear);
                 }
@@ -251,12 +263,12 @@ public class GameManager
         positions[1] = new Point3D(0f, towerPosY, max);
         positions[2] = new Point3D(max, towerPosY, 0f);
         positions[3] = new Point3D(max, towerPosY, max);
-
-        Vector3D[] directions = new Vector3D[4];
-        directions[0] = new Vector3D(1f, -0.5f, 1f);
-        directions[1] = new Vector3D(1f, -0.5f, -1f);
-        directions[2] = new Vector3D(-1f, -0.5f, 1f);
-        directions[3] = new Vector3D(-1f, -0.5f, -1f);
+//
+//        Vector3D[] directions = new Vector3D[4];
+//        directions[0] = new Vector3D(1f, -0.5f, 1f);
+//        directions[1] = new Vector3D(1f, -0.5f, -1f);
+//        directions[2] = new Vector3D(-1f, -0.5f, 1f);
+//        directions[3] = new Vector3D(-1f, -0.5f, -1f);
 
         for (int i = 0; i < 4; i++)
         {
@@ -266,7 +278,6 @@ public class GameManager
             Light spotLight = new Light();
             spotLight.setID(i);
             spotLight.setPosition(orbPos, true);
-            spotLight.setDirection(directions[i]);
             spotLight.setColor(Settings.watchtowerLightColor);
             spotLight.setSpotFactor(Settings.watchtowerLightSpotFactor);
             spotLight.setConstantAttenuation(Settings.watchtowerLightConstantAttenuation);

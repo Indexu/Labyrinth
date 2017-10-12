@@ -1,5 +1,6 @@
 package com.ru.tgra.utilities;
 
+import com.ru.tgra.AudioManager;
 import com.ru.tgra.GameManager;
 import com.ru.tgra.models.Point3D;
 import com.ru.tgra.models.Vector3D;
@@ -113,6 +114,7 @@ public class CollisionsUtil
                 if (spear.isFalling())
                 {
                     playerPosition.set(GameManager.mazeGenerator.getStart());
+                    AudioManager.playDeath();
                 }
                 else
                 {

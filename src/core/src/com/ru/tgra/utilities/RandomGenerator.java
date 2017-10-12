@@ -1,11 +1,12 @@
 package com.ru.tgra.utilities;
 
+import com.ru.tgra.models.Point3D;
+
 import java.util.Random;
 
 public class RandomGenerator
 {
     private static Random rand = new Random();
-    private static float[] corners = new float[] {0, 90, 180, 270};
 
     public static float randomFloatInRange(float min, float max)
     {
@@ -22,8 +23,11 @@ public class RandomGenerator
         return rand.nextBoolean();
     }
 
-    public static float randomCorner()
+    public static Point3D randomPointInXZ(float xStart, float xEnd, float zStart, float zEnd)
     {
-        return corners[rand.nextInt(4)];
+        float x = randomFloatInRange(xStart, xEnd);
+        float z = randomFloatInRange(zStart, zEnd);
+
+        return new Point3D(x, 0f, z);
     }
 }

@@ -21,4 +21,12 @@ public class MathUtils
     {
         return (lower <= number && number <= higher);
     }
+
+    public static boolean sameSignFloats(float f1, float f2)
+    {
+        boolean f1Negative = ((Float.floatToIntBits(f1)) >> 31) == -1;
+        boolean f2Negative = ((Float.floatToIntBits(f2)) >> 31) == -1;
+
+        return f1Negative == f2Negative;
+    }
 }

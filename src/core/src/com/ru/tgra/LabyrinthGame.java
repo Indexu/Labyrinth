@@ -28,7 +28,8 @@ public class LabyrinthGame extends ApplicationAdapter
 
         GameManager.mainMenu = false;
         GameManager.createMaze();
-        GameManager.mazeGenerator.printMaze();
+        AudioManager.playHeartbeat();
+        AudioManager.playHorrorAmbience();
     }
 
     private void mainMenuInput()
@@ -47,6 +48,7 @@ public class LabyrinthGame extends ApplicationAdapter
 
 		if (mouseX != oldMouseX)
 		{
+		    GameManager.player.mouseLook(oldMouseX - mouseX);
 			//GameManager.player.getCamera().yaw((mouseX - oldMouseX) * deltaTime * -30);
 			oldMouseX = mouseX;
 		}
@@ -88,35 +90,35 @@ public class LabyrinthGame extends ApplicationAdapter
 		}
 
 		// Debug
-        if(Gdx.input.isKeyPressed(Input.Keys.UP))
-        {
-            GameManager.player.getCamera().pitch(Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-        {
-            GameManager.player.getCamera().pitch(-Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.E))
-        {
-            GameManager.player.getCamera().roll(Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.Q))
-        {
-            GameManager.player.getCamera().roll(-Settings.playerLookSensitivity * deltaTime);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
-        {
-            GameManager.player.getCamera().slide(0f, Settings.playerSpeed * deltaTime, 0f);
-        }
-
-        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
-        {
-            GameManager.player.getCamera().slide(0f, -Settings.playerSpeed * deltaTime, 0f);
-        }
+//        if(Gdx.input.isKeyPressed(Input.Keys.UP))
+//        {
+//            GameManager.player.getCamera().pitch(Settings.playerButtonLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+//        {
+//            GameManager.player.getCamera().pitch(-Settings.playerButtonLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.E))
+//        {
+//            GameManager.player.getCamera().roll(Settings.playerButtonLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.Q))
+//        {
+//            GameManager.player.getCamera().roll(-Settings.playerButtonLookSensitivity * deltaTime);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.SPACE))
+//        {
+//            GameManager.player.getCamera().slide(0f, Settings.playerSpeed * deltaTime, 0f);
+//        }
+//
+//        if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT))
+//        {
+//            GameManager.player.getCamera().slide(0f, -Settings.playerSpeed * deltaTime, 0f);
+//        }
 	}
 
 	private void update(float deltaTime)
@@ -131,9 +133,10 @@ public class LabyrinthGame extends ApplicationAdapter
             gameObject.update(deltaTime);
         }
 
-        //CollisionsUtil.playerWallCollisions(GameManager.player);
-        //CollisionsUtil.playerSpearCollision(GameManager.player);
+        CollisionsUtil.playerWallCollisions(GameManager.player);
+        CollisionsUtil.playerSpearCollision(GameManager.player);
 
+        GameManager.setHeartbeat();
 	    GameManager.checkEndPoint();
 	}
 
@@ -182,6 +185,8 @@ public class LabyrinthGame extends ApplicationAdapter
                 GameManager.headLight.getDirection().add(new Vector3D(0f, -1f, 0f));
             }
 
+            GraphicsEnvironment.shader.setLight(GameManager.headLight);
+
 			for (GameObject gameObject : GameManager.gameObjects)
             {
                 gameObject.draw(viewNum);
@@ -204,6 +209,7 @@ public class LabyrinthGame extends ApplicationAdapter
 	{
 		GraphicsEnvironment.init();
 		GameManager.init();
+		AudioManager.init();
 
 		shader = GraphicsEnvironment.shader;
 
@@ -215,6 +221,9 @@ public class LabyrinthGame extends ApplicationAdapter
 		ModelMatrix.main = new ModelMatrix();
 		ModelMatrix.main.loadIdentityMatrix();
 		shader.setModelMatrix(ModelMatrix.main.getMatrix());
+
+        Gdx.input.setCursorCatched(true);
+        Gdx.input.setCursorPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		oldMouseX = Gdx.input.getX();
 		oldMouseY = Gdx.graphics.getHeight() - Gdx.input.getY();

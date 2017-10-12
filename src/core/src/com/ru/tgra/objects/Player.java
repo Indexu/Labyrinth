@@ -1,7 +1,6 @@
 package com.ru.tgra.objects;
 
 import com.ru.tgra.Camera;
-import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
 import com.ru.tgra.shapes.SphereGraphic;
@@ -67,8 +66,6 @@ public class Player extends GameObject
         GraphicsEnvironment.shader.setModelMatrix(ModelMatrix.main.getMatrix());
         GraphicsEnvironment.shader.setMaterial(material);
 
-        GraphicsEnvironment.shader.setLight(GameManager.headLight);
-
         SphereGraphic.drawSolidPolySphere();
     }
 
@@ -94,12 +91,17 @@ public class Player extends GameObject
 
     public void lookLeft()
     {
-        yaw = Settings.playerLookSensitivity;
+        yaw = Settings.playerButtonLookSensitivity;
     }
 
     public void lookRight()
     {
-        yaw = -Settings.playerLookSensitivity;
+        yaw = -Settings.playerButtonLookSensitivity;
+    }
+
+    public void mouseLook(float amount)
+    {
+        yaw = amount * Settings.playerMouseLookSensitivity;
     }
 
     public Camera getCamera()

@@ -1,10 +1,12 @@
 package com.ru.tgra.objects;
 
+import com.ru.tgra.GameManager;
 import com.ru.tgra.GraphicsEnvironment;
 import com.ru.tgra.Settings;
 import com.ru.tgra.models.*;
 import com.ru.tgra.shapes.BoxGraphic;
 import com.ru.tgra.shapes.SphereGraphic;
+import com.ru.tgra.utilities.MathUtils;
 import com.ru.tgra.utilities.RandomGenerator;
 
 public class Watchtower extends GameObject
@@ -17,6 +19,13 @@ public class Watchtower extends GameObject
     private Vector3D orbScale;
     private Light spotLight;
     private Point3D orbPos;
+
+    private Vector3D direction;
+    private Vector3D spotLightDirection;
+    private Point3D spotLightCurrentPoint;
+    private Point3D spotLightDestinationPoint;
+    private float spotLightSpeed;
+    private float mazeLength;
 
     public Watchtower(Point3D position,
                       Vector3D towerScale,
@@ -40,6 +49,17 @@ public class Watchtower extends GameObject
         this.mask = mask;
         this.spotLight = spotLight;
         this.orbPos = spotLight.getPosition();
+
+        mazeLength = GameManager.mazeWalls.length-2;
+
+        spotLightCurrentPoint = new Point3D(mazeLength / 2, 0f, mazeLength / 2);
+
+        Vector3D initialDirection = Vector3D.difference(spotLightCurrentPoint, orbPos);
+        spotLight.setDirection(initialDirection);
+
+        this.spotLightDirection = spotLight.getDirection();
+        direction = new Vector3D();
+        randomizeDirection();
 
         minimapMask = new CubeMask(false, false, false, false, true, false);
     }
@@ -85,14 +105,48 @@ public class Watchtower extends GameObject
 
     public void update(float deltaTime)
     {
-        float amount = RandomGenerator.randomFloatInRange(-5f, 5f) * deltaTime;
-        if (RandomGenerator.nextBool())
+        if (spotLightSpeed < 0.8f)
         {
-            spotLight.getDirection().x += amount;
+            spotLightSpeed += deltaTime;
+
+            if (0.8f < spotLightSpeed)
+            {
+                spotLightSpeed = 0.8f;
+            }
         }
-        else
+
+        Vector3D v = new Vector3D(direction);
+        v.scale(deltaTime * spotLightSpeed);
+
+        spotLightCurrentPoint.add(v);
+        spotLightDirection.add(v);
+
+        checkDirection();
+    }
+
+    private void checkDirection()
+    {
+        float x = spotLightDestinationPoint.x - spotLightCurrentPoint.x;
+        float z = spotLightDestinationPoint.z - spotLightCurrentPoint.z;
+
+        boolean sameVector = MathUtils.sameSignFloats(x, direction.x) && MathUtils.sameSignFloats(z, direction.z);
+
+        if (!sameVector)
         {
-            spotLight.getDirection().z += amount;
+            randomizeDirection();
         }
+    }
+
+    private void randomizeDirection()
+    {
+        spotLightDestinationPoint = RandomGenerator.randomPointInXZ(1f, mazeLength, 1f, mazeLength);
+
+        //System.out.println("\nRandomized point: " + spotLightDestinationPoint);
+
+        direction.x = spotLightDestinationPoint.x - spotLightCurrentPoint.x;
+        direction.z = spotLightDestinationPoint.z - spotLightCurrentPoint.z;
+
+        direction.normalize();
+        spotLightSpeed = 0f;
     }
 }

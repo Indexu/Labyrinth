@@ -19,7 +19,8 @@ public class Settings
     /* === Player settings === */
     public static final float playerFOV = 60f;
     public static final float playerSpeed = 5f;
-    public static final float playerLookSensitivity = 100f;
+    public static final float playerButtonLookSensitivity = 100f;
+    public static final float playerMouseLookSensitivity = 30f;
 
     /* === End point settings === */
     public static final float bobbingSpeed = 4f;
@@ -28,9 +29,10 @@ public class Settings
     /* === Spear settings === */
     public static final float spearPauseTime = 1.5f;
     public static final float spearRetractSpeed = 0.5f;
-    public static final float spearFallSpeed = 5f;
+    public static final float spearFallSpeed = 10f;
     public static final float spearGroundY = 0.5f;
     public static final float spearUpY = 2f;
+    public static final float spearVolumeRadius = 8f;
 
     /* === Watchtower settings === */
     public static final Vector3D watchtowerScale = new Vector3D(1f, 4f, 1f);
@@ -54,8 +56,19 @@ public class Settings
             new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
             new Color(1.0f, 1.0f, 1.0f, 1.0f), // Diffuse
             new Color(0.0f, 0.0f, 0.0f, 0.0f), // Specular
-            new Color(0.5f, 0.5f, 0.5f, 0.5f), // Emission
+            new Color(0.0f, 0.0f, 0.0f, 1.0f), // Emission
             128f,
+            1f
+    );
+
+    // Spears
+    public static final Material spearMaterial = new Material
+    (
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Ambience
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Diffuse
+            new Color(0.4f, 0.4f, 0.4f, 1.0f), // Specular
+            new Color(0.0f, 0.0f, 0.0f, 0.0f), // Emission
+            32f,
             1f
     );
 
@@ -159,9 +172,9 @@ public class Settings
 
     // Helmet light
     public static final Color helmetLightColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-    public static final float helmetLightSpotFactor = 7.0f; // 7
-    public static final float helmetConstantAttenuation = 0.3f;
-    public static final float helmetLightLinearAttenuation = 0.7f;
+    public static final float helmetLightSpotFactor = 10.0f; // 7
+    public static final float helmetConstantAttenuation = 0.5f;
+    public static final float helmetLightLinearAttenuation = 0.3f;
     public static final float helmetLightQuadraticAttenuation = 0.3f;
 
     // End point light
@@ -172,9 +185,9 @@ public class Settings
     public static final float endPointLightLinearAttenuation = 0f;
     public static final float endPointLightQuadraticAttenuation = 2f;
 
-    // End point light
+    // Watchtower light
     public static final Color watchtowerLightColor = new Color(1.0f, 0.0f, 0.0f, 1.0f);
-    public static final float watchtowerLightSpotFactor = 15.0f;
+    public static final float watchtowerLightSpotFactor = 50.0f;
     public static final float watchtowerLightConstantAttenuation = 0.0f;
     public static final float watchtowerLightLinearAttenuation = 0.0f;
     public static final float watchtowerLightQuadraticAttenuation = 0.04f;
